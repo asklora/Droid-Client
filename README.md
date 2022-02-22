@@ -1,6 +1,10 @@
 # LORA Technologies Bot Client
 Client for LORA Tech's bot services.
 
+**Example**  
+A working example script that you can try can be found at https://github.com/asklora/Droid-Client/blob/production/example_usage.py
+
+
 ## Usage:  
 ### Bot Creation
 ```
@@ -160,6 +164,3 @@ Returns:
             v2 (int),                  # 
         }
 ```
-
-**Example**  
-A working example script that you can try can be found at https://github.com/asklora/Droid-Client/blob/production/example_usage.py
