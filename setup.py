@@ -14,7 +14,7 @@ setuptools.setup(
     description = 'Python client for connecting to LORA Technologies\' bot services.',
     long_description=long_description,
     long_description_content_type = 'text/markdown',
-    url = 'asklora.ai',
+    url = 'https://asklora.ai',
     install_requires=required,
     author = 'LORA Tech',
     author_email = 'asklora@loratechai.com',
