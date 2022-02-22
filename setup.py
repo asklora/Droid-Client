@@ -2,10 +2,10 @@ import setuptools
 from setuptools import find_packages
 
 # Load the README and requirements
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+with open("README.md", "r", encoding="utf-8") as f:
+    long_description = f.read()
 
-with open('requirements.txt') as f:
+with open('requirements.txt', "r", encoding="utf-8") as f:
     required = f.read().splitlines()
 
 setuptools.setup(
@@ -14,7 +14,7 @@ setuptools.setup(
     description = 'Python client for connecting to LORA Technologies\' bot services.',
     long_description=long_description,
     long_description_content_type = 'text/markdown',
-    url = '#',
+    url = 'asklora.ai',
     install_requires=required,
     author = 'LORA Tech',
     author_email = 'asklora@loratechai.com',

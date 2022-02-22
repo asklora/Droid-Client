@@ -3,8 +3,7 @@
 __author__ = "LORA Technologies"
 __email__ = "asklora@loratechai.com"
 
-# from LoraDroidClient import Client
-from LoraDroidClient.client import Client
+from LoraDroidClient import Client
 from pprint import pprint
 
 client = Client(address='<HOST>', port='50065')
