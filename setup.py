@@ -9,12 +9,13 @@ with open('requirements.txt', "r", encoding="utf-8") as f:
     required = f.read().splitlines()
 
 setuptools.setup(
-    name = 'LoraDroidClient',
-    version = '0.1.0',
+    name = 'DroidRpc',
+    version='1.2.0',
     description = 'Python client for connecting to LORA Technologies\' bot services.',
     long_description=long_description,
     long_description_content_type = 'text/markdown',
     url = 'https://asklora.ai',
+    license='MIT',
     install_requires=required,
     author = 'LORA Tech',
     author_email = 'asklora@loratechai.com',

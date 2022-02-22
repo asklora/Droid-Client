@@ -4,7 +4,7 @@ __author__ = "LORA Technologies"
 __email__ = "asklora@loratechai.com"
 
 import pytest
-from LoraDroidClient import Client
+from DroidRpc import Client
 
 class InputGenerator:
     """

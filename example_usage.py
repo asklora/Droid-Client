@@ -3,7 +3,7 @@
 __author__ = "LORA Technologies"
 __email__ = "asklora@loratechai.com"
 
-from LoraDroidClient import Client
+from DroidRpc import Client
 from pprint import pprint
 
 client = Client(address='<HOST>', port='50065')
