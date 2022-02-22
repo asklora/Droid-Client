@@ -9,7 +9,7 @@ with open('requirements.txt', "r", encoding="utf-8") as f:
     required = f.read().splitlines()
 
 setuptools.setup(
-    name = 'DroidRpc',
+    name = 'LoraDroidClient',
     version='1.2.0',
     description = 'Python client for connecting to LORA Technologies\' bot services.',
     long_description=long_description,
