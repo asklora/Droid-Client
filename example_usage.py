@@ -19,8 +19,6 @@ create_response = client.create_bot(
 )
 
 pprint(create_response)
-for field in create_response:
-    print(f"{field} ({type(create_response[field]).__name__}),")
 print()
 
 hedge_response = client.hedge(
@@ -41,8 +39,6 @@ hedge_response = client.hedge(
     option_price=create_response.get('option_price',0),
 )
 pprint(hedge_response)
-for field in hedge_response:
-    print(f"{field} ({type(hedge_response[field]).__name__}),")
 print()
 
 stop_response = client.stop(
@@ -63,6 +59,4 @@ stop_response = client.stop(
     option_price=create_response.get('option_price',0),
 )
 pprint(stop_response)
-for field in stop_response:
-    print(f"{field} ({type(stop_response[field]).__name__}),")
 print()
