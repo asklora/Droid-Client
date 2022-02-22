@@ -1,4 +1,4 @@
-# LORA Technologies Bot Client
+# LORA Technologies' Bot Client
 Client for LORA Tech's bot services.
 
 **Example**  
