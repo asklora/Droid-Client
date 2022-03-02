@@ -24,36 +24,36 @@ Kwargs:
 Returns:
     dict: Parsed bot service response.
         {
-            ticker (str),                 # RIC code
-            share_num (float),            # Number of shares bought
-            expiry (str),                 # Date of expiry
-            spot_date (str),              # [For internal use]
+            barrier (int),                # 
+            bot_id (str),                 # This bot's bot type
+            classic_vol (float),          # 
             created (str),                # Date of bot creation
-            total_bot_share_num (int),    # Number of shares held by this bot
+            delta (int),                  # 
+            entry_price (float),          # Price of stock when this bot was created
+            expiry (str),                 # Date of expiry
+            fractionals (bool),           # Whether this bot is allowed to use fractional shares
+            margin (int),                 # Amount of margin this bot is allowed to use
+            max_loss_amount (float),      # 
             max_loss_pct (float),         # 
             max_loss_price (float),       # 
-            max_loss_amount (float),      # 
-            target_profit_pct (float),    # 
-            target_profit_price (float),  # 
-            target_profit_amount (float), # 
-            entry_price (float),          # Price of stock when this bot was created
-            margin (int),                 # Amount of margin this bot is allowed to use
-            bot_id (str),                 # This bot's bot type
-            fractionals (bool),           # Whether this bot is allowed to use fractional shares
-            side (str),                   # 
-            status (str),                 # Status of this bot (i.e. active)
-            vol (float),                  # 
-            classic_vol (float),          # 
-            strike_2 (int),               # 
-            barrier (int),                # 
-            delta (int),                  # 
             option_price (int),           # 
             q (int),                      # 
             r (int),                      # 
+            share_num (float),            # Number of shares bought
+            side (str),                   # 
+            spot_date (str),              # [For internal use]
+            status (str),                 # Status of this bot (i.e. active)
             strike (int),                 # 
+            strike_2 (int),               # 
             t (int),                      # 
+            target_profit_amount (float), # 
+            target_profit_pct (float),    # 
+            target_profit_price (float),  # 
+            ticker (str),                 # RIC code
+            total_bot_share_num (int),    # Number of shares held by this bot
             v1 (int),                     # 
             v2 (int),                     # 
+            vol (float),                  #
         }
 ```
 
@@ -90,22 +90,22 @@ Kwargs:
 Returns:
     dict: Parsed bot service response
         {
-            entry_price (float),       # 
+            barrier (int),             # Take profit
             current_price (float),     # Current price of stock
-            share_num (float),         # 
-            total_bot_share_num (int), # 
-            last_hedge_delta (int),    # 
-            share_change (int),        # 
-            side (str),                # 
-            status (str),              # 
-            strike_2 (int),            # 
-            barrier (int),             # 
             delta (int),               # 
+            entry_price (float),       # 
+            last_hedge_delta (int),    # 
             option_price (int),        # 
             q (int),                   # 
             r (int),                   # 
-            strike (int),              # 
+            share_change (int),        # 
+            share_num (float),         # 
+            side (str),                # 
+            status (str),              # 
+            strike (int),              # Target price
+            strike_2 (int),            # For ucdc we have two strikes
             t (int),                   # 
+            total_bot_share_num (int), # 
             v1 (int),                  # 
             v2 (int),                  # 
         }
@@ -144,22 +144,22 @@ Kwargs:
 Returns:
     dict: Parsed bot service response
         {
-            entry_price (float),       # 
+            barrier (int),             # Take profit
             current_price (float),     # Current price of stock
-            share_num (float),         # 
-            total_bot_share_num (int), # 
-            last_hedge_delta (int),    # 
-            share_change (int),        # 
-            side (str),                # 
-            status (str),              # 
-            strike_2 (int),            # 
-            barrier (int),             # 
             delta (int),               # 
+            entry_price (float),       # 
+            last_hedge_delta (int),    # 
             option_price (int),        # 
             q (int),                   # 
             r (int),                   # 
-            strike (int),              # 
+            share_change (int),        # 
+            share_num (float),         # 
+            side (str),                # 
+            status (str),              # 
+            strike (int),              # Target price
+            strike_2 (int),            # For ucdc we have two strikes
             t (int),                   # 
+            total_bot_share_num (int), # 
             v1 (int),                  # 
             v2 (int),                  # 
         }
