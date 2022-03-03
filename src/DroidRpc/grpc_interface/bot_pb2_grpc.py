@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . import bot_pb2 as bot__pb2
+import bot_pb2 as bot__pb2
 
 
 class EchoStub(object):
@@ -132,5 +132,236 @@ class Echo(object):
         return grpc.experimental.unary_unary(request, target, '/echo.Echo/StopBot',
             bot__pb2.Stop.SerializeToString,
             bot__pb2.EchoReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
+class DroidStub(object):
+    """Just for better naming
+    """
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.CreateBot = channel.unary_unary(
+                '/echo.Droid/CreateBot',
+                request_serializer=bot__pb2.Create.SerializeToString,
+                response_deserializer=bot__pb2.CreateResponse.FromString,
+                )
+        self.HedgeBot = channel.unary_unary(
+                '/echo.Droid/HedgeBot',
+                request_serializer=bot__pb2.Hedge.SerializeToString,
+                response_deserializer=bot__pb2.HedgeResponse.FromString,
+                )
+        self.StopBot = channel.unary_unary(
+                '/echo.Droid/StopBot',
+                request_serializer=bot__pb2.Stop.SerializeToString,
+                response_deserializer=bot__pb2.StopResponse.FromString,
+                )
+        self.CreateBots = channel.stream_stream(
+                '/echo.Droid/CreateBots',
+                request_serializer=bot__pb2.Create.SerializeToString,
+                response_deserializer=bot__pb2.CreateResponse.FromString,
+                )
+        self.HedgeBots = channel.stream_stream(
+                '/echo.Droid/HedgeBots',
+                request_serializer=bot__pb2.Hedge.SerializeToString,
+                response_deserializer=bot__pb2.HedgeResponse.FromString,
+                )
+        self.StopBots = channel.stream_stream(
+                '/echo.Droid/StopBots',
+                request_serializer=bot__pb2.Stop.SerializeToString,
+                response_deserializer=bot__pb2.StopResponse.FromString,
+                )
+
+
+class DroidServicer(object):
+    """Just for better naming
+    """
+
+    def CreateBot(self, request, context):
+        """Unary services
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def HedgeBot(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StopBot(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateBots(self, request_iterator, context):
+        """BiStream services
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def HedgeBots(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StopBots(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_DroidServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'CreateBot': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateBot,
+                    request_deserializer=bot__pb2.Create.FromString,
+                    response_serializer=bot__pb2.CreateResponse.SerializeToString,
+            ),
+            'HedgeBot': grpc.unary_unary_rpc_method_handler(
+                    servicer.HedgeBot,
+                    request_deserializer=bot__pb2.Hedge.FromString,
+                    response_serializer=bot__pb2.HedgeResponse.SerializeToString,
+            ),
+            'StopBot': grpc.unary_unary_rpc_method_handler(
+                    servicer.StopBot,
+                    request_deserializer=bot__pb2.Stop.FromString,
+                    response_serializer=bot__pb2.StopResponse.SerializeToString,
+            ),
+            'CreateBots': grpc.stream_stream_rpc_method_handler(
+                    servicer.CreateBots,
+                    request_deserializer=bot__pb2.Create.FromString,
+                    response_serializer=bot__pb2.CreateResponse.SerializeToString,
+            ),
+            'HedgeBots': grpc.stream_stream_rpc_method_handler(
+                    servicer.HedgeBots,
+                    request_deserializer=bot__pb2.Hedge.FromString,
+                    response_serializer=bot__pb2.HedgeResponse.SerializeToString,
+            ),
+            'StopBots': grpc.stream_stream_rpc_method_handler(
+                    servicer.StopBots,
+                    request_deserializer=bot__pb2.Stop.FromString,
+                    response_serializer=bot__pb2.StopResponse.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'echo.Droid', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class Droid(object):
+    """Just for better naming
+    """
+
+    @staticmethod
+    def CreateBot(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/echo.Droid/CreateBot',
+            bot__pb2.Create.SerializeToString,
+            bot__pb2.CreateResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def HedgeBot(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/echo.Droid/HedgeBot',
+            bot__pb2.Hedge.SerializeToString,
+            bot__pb2.HedgeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def StopBot(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/echo.Droid/StopBot',
+            bot__pb2.Stop.SerializeToString,
+            bot__pb2.StopResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CreateBots(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(request_iterator, target, '/echo.Droid/CreateBots',
+            bot__pb2.Create.SerializeToString,
+            bot__pb2.CreateResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def HedgeBots(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(request_iterator, target, '/echo.Droid/HedgeBots',
+            bot__pb2.Hedge.SerializeToString,
+            bot__pb2.HedgeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def StopBots(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(request_iterator, target, '/echo.Droid/StopBots',
+            bot__pb2.Stop.SerializeToString,
+            bot__pb2.StopResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
