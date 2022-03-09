@@ -3,11 +3,14 @@
 __author__ = "LORA Technologies"
 __email__ = "asklora@loratechai.com"
 
-from typing import Optional
+from google.protobuf.json_format import MessageToDict
+from typing import Optional, List
 import grpc
 from .grpc_interface import bot_pb2_grpc, bot_pb2
 from datetime import datetime
 from .converter import datetime_to_timestamp
+from .dataclasses import create_inputs, hedge_inputs, stop_inputs
+from dataclasses import asdict
 import json
 
 # TODO use pydantic dataclass to validate field types.
@@ -18,6 +21,7 @@ class Client:
         self.port = port
         self.channel = grpc.insecure_channel(self.address + ":" + self.port)
         self.stub = bot_pb2_grpc.EchoStub(self.channel)
+        self.droid = bot_pb2_grpc.DroidStub(self.channel) # This one contains the bistream
 
     def __string_to_datetime(self, date: str):
         date = datetime.strptime(date, "%Y-%m-%d")
@@ -52,6 +56,50 @@ class Client:
             )
         )
         return json.loads(response.message)
+
+    def __create_bot_generator(
+        self, 
+        bot_inputs: List[create_inputs]
+    ):
+        """
+        Generator function to be passed to the create_bots() gRPC bistream function.
+
+        Args:
+            bot_inputs (List): List of inputs for each bot. The
+        """
+        for i in bot_inputs:
+            yield bot_pb2.Create(
+                ticker=i.ticker,
+                spot_date=self.__string_to_datetime(i.spot_date),
+                investment_amount=i.investment_amount,
+                price=i.price,
+                bot_id=i.bot_id,
+                margin=i.margin,
+                fraction=i.fractionals,
+                tp_multiplier=i.tp_multiplier,
+                sl_multiplier=i.sl_multiplier
+            )
+    
+    def create_bots(
+        self,
+        bot_inputs: List[create_inputs]
+    ):
+        """
+        Returns a list of bots as dictionaries.
+
+        Args:
+            bot_inputs (List[create_inputs]): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        # TODO: Use a secure channel, since this is external facing
+        responses = self.droid.CreateBots(self.__create_bot_generator(bot_inputs))
+        # Returning a list would be easier for client to work wtih, but they would have to wait for all bots to be created.
+        # This is slow because they can't pipeline. I'm not sure what we want to do here.
+        # return [MessageToDict(response) for response in responses]
+        return responses
+
 
     def hedge(
         self,
