@@ -149,22 +149,22 @@ class DroidStub(object):
         self.CreateBot = channel.unary_unary(
                 '/echo.Droid/CreateBot',
                 request_serializer=bot__pb2.Create.SerializeToString,
-                response_deserializer=bot__pb2.CreateResponse.FromString,
+                response_deserializer=bot__pb2.EchoReply.FromString,
                 )
         self.HedgeBot = channel.unary_unary(
                 '/echo.Droid/HedgeBot',
                 request_serializer=bot__pb2.Hedge.SerializeToString,
-                response_deserializer=bot__pb2.HedgeResponse.FromString,
+                response_deserializer=bot__pb2.EchoReply.FromString,
                 )
         self.StopBot = channel.unary_unary(
                 '/echo.Droid/StopBot',
                 request_serializer=bot__pb2.Stop.SerializeToString,
-                response_deserializer=bot__pb2.StopResponse.FromString,
+                response_deserializer=bot__pb2.EchoReply.FromString,
                 )
         self.CreateBots = channel.stream_stream(
                 '/echo.Droid/CreateBots',
-                request_serializer=bot__pb2.Create.SerializeToString,
-                response_deserializer=bot__pb2.CreateResponse.FromString,
+                request_serializer=bot__pb2.BatchCreate.SerializeToString,
+                response_deserializer=bot__pb2.BatchCreateResponse.FromString,
                 )
         self.HedgeBots = channel.stream_stream(
                 '/echo.Droid/HedgeBots',
@@ -226,22 +226,22 @@ def add_DroidServicer_to_server(servicer, server):
             'CreateBot': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateBot,
                     request_deserializer=bot__pb2.Create.FromString,
-                    response_serializer=bot__pb2.CreateResponse.SerializeToString,
+                    response_serializer=bot__pb2.EchoReply.SerializeToString,
             ),
             'HedgeBot': grpc.unary_unary_rpc_method_handler(
                     servicer.HedgeBot,
                     request_deserializer=bot__pb2.Hedge.FromString,
-                    response_serializer=bot__pb2.HedgeResponse.SerializeToString,
+                    response_serializer=bot__pb2.EchoReply.SerializeToString,
             ),
             'StopBot': grpc.unary_unary_rpc_method_handler(
                     servicer.StopBot,
                     request_deserializer=bot__pb2.Stop.FromString,
-                    response_serializer=bot__pb2.StopResponse.SerializeToString,
+                    response_serializer=bot__pb2.EchoReply.SerializeToString,
             ),
             'CreateBots': grpc.stream_stream_rpc_method_handler(
                     servicer.CreateBots,
-                    request_deserializer=bot__pb2.Create.FromString,
-                    response_serializer=bot__pb2.CreateResponse.SerializeToString,
+                    request_deserializer=bot__pb2.BatchCreate.FromString,
+                    response_serializer=bot__pb2.BatchCreateResponse.SerializeToString,
             ),
             'HedgeBots': grpc.stream_stream_rpc_method_handler(
                     servicer.HedgeBots,
@@ -277,7 +277,7 @@ class Droid(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/echo.Droid/CreateBot',
             bot__pb2.Create.SerializeToString,
-            bot__pb2.CreateResponse.FromString,
+            bot__pb2.EchoReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -294,7 +294,7 @@ class Droid(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/echo.Droid/HedgeBot',
             bot__pb2.Hedge.SerializeToString,
-            bot__pb2.HedgeResponse.FromString,
+            bot__pb2.EchoReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -311,7 +311,7 @@ class Droid(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/echo.Droid/StopBot',
             bot__pb2.Stop.SerializeToString,
-            bot__pb2.StopResponse.FromString,
+            bot__pb2.EchoReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -327,8 +327,8 @@ class Droid(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.stream_stream(request_iterator, target, '/echo.Droid/CreateBots',
-            bot__pb2.Create.SerializeToString,
-            bot__pb2.CreateResponse.FromString,
+            bot__pb2.BatchCreate.SerializeToString,
+            bot__pb2.BatchCreateResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

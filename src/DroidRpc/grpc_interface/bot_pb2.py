@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\tbot.proto\x12\x04\x65\x63ho\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd1\x01\n\x06\x43reate\x12\x0e\n\x06ticker\x18\x01 \x01(\t\x12-\n\tspot_date\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x19\n\x11investment_amount\x18\x03 \x01(\x02\x12\r\n\x05price\x18\x04 \x01(\x02\x12\x0e\n\x06\x62ot_id\x18\x05 \x01(\t\x12\x0e\n\x06margin\x18\x06 \x01(\x05\x12\x10\n\x08\x66raction\x18\x07 \x01(\x08\x12\x15\n\rtp_multiplier\x18\x08 \x01(\x02\x12\x15\n\rsl_multiplier\x18\t \x01(\x02\"\x90\x04\n\x05Hedge\x12\x0e\n\x06\x62ot_id\x18\x01 \x01(\t\x12\x0b\n\x03ric\x18\x02 \x01(\t\x12\x15\n\rcurrent_price\x18\x03 \x01(\x02\x12\x13\n\x0b\x65ntry_price\x18\x04 \x01(\x02\x12\x16\n\x0elast_share_num\x18\x05 \x01(\x02\x12\x18\n\x10last_hedge_delta\x18\x06 \x01(\x02\x12\x19\n\x11investment_amount\x18\x07 \x01(\x02\x12\x18\n\x10\x62ot_cash_balance\x18\x08 \x01(\x02\x12\x17\n\x0fstop_loss_price\x18\t \x01(\x02\x12\x19\n\x11take_profit_price\x18\n \x01(\x02\x12*\n\x06\x65xpiry\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0e\n\x06strike\x18\x0c \x01(\x02\x12\x10\n\x08strike_2\x18\r \x01(\x02\x12\x0e\n\x06margin\x18\x0e \x01(\x02\x12\x10\n\x08\x66raction\x18\x0f \x01(\x02\x12\x14\n\x0coption_price\x18\x10 \x01(\x02\x12\x0f\n\x07\x62\x61rrier\x18\x11 \x01(\x02\x12\x19\n\x11\x63urrent_low_price\x18\x12 \x01(\x02\x12\x1a\n\x12\x63urrent_high_price\x18\x13 \x01(\x02\x12\x11\n\task_price\x18\x14 \x01(\x02\x12\x11\n\tbid_price\x18\x15 \x01(\x02\x12/\n\x0btrading_day\x18\x16 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x8f\x04\n\x04Stop\x12\x0e\n\x06\x62ot_id\x18\x01 \x01(\t\x12\x0b\n\x03ric\x18\x02 \x01(\t\x12\x15\n\rcurrent_price\x18\x03 \x01(\x02\x12\x13\n\x0b\x65ntry_price\x18\x04 \x01(\x02\x12\x16\n\x0elast_share_num\x18\x05 \x01(\x02\x12\x18\n\x10last_hedge_delta\x18\x06 \x01(\x02\x12\x19\n\x11investment_amount\x18\x07 \x01(\x02\x12\x18\n\x10\x62ot_cash_balance\x18\x08 \x01(\x02\x12\x17\n\x0fstop_loss_price\x18\t \x01(\x02\x12\x19\n\x11take_profit_price\x18\n \x01(\x02\x12*\n\x06\x65xpiry\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0e\n\x06strike\x18\x0c \x01(\x02\x12\x10\n\x08strike_2\x18\r \x01(\x02\x12\x0e\n\x06margin\x18\x0e \x01(\x02\x12\x10\n\x08\x66raction\x18\x0f \x01(\x02\x12\x14\n\x0coption_price\x18\x10 \x01(\x02\x12\x0f\n\x07\x62\x61rrier\x18\x11 \x01(\x02\x12\x19\n\x11\x63urrent_low_price\x18\x12 \x01(\x02\x12\x1a\n\x12\x63urrent_high_price\x18\x13 \x01(\x02\x12\x11\n\task_price\x18\x14 \x01(\x02\x12\x11\n\tbid_price\x18\x15 \x01(\x02\x12/\n\x0btrading_day\x18\x16 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\xb9\x04\n\x0e\x43reateResponse\x12\x0f\n\x07\x62\x61rrier\x18\x01 \x01(\x02\x12\x0e\n\x06\x62ot_id\x18\x02 \x01(\t\x12\x13\n\x0b\x63lassic_vol\x18\x03 \x01(\x02\x12\x0f\n\x07\x63reated\x18\x04 \x01(\t\x12\r\n\x05\x64\x65lta\x18\x05 \x01(\x02\x12\x13\n\x0b\x65ntry_price\x18\x06 \x01(\x02\x12\x0e\n\x06\x65xpiry\x18\x07 \x01(\t\x12\x10\n\x08\x66raction\x18\x08 \x01(\x08\x12\x0e\n\x06margin\x18\t \x01(\x05\x12\x17\n\x0fmax_loss_amount\x18\n \x01(\x02\x12\x14\n\x0cmax_loss_pct\x18\x0b \x01(\x02\x12\x16\n\x0emax_loss_price\x18\x0c \x01(\x02\x12\x14\n\x0coption_price\x18\r \x01(\x02\x12\t\n\x01q\x18\x0e \x01(\x02\x12\t\n\x01r\x18\x0f \x01(\x02\x12\x11\n\tshare_num\x18\x10 \x01(\x02\x12\x0c\n\x04side\x18\x11 \x01(\t\x12\x11\n\tspot_date\x18\x12 \x01(\t\x12\x0e\n\x06status\x18\x13 \x01(\t\x12\x0e\n\x06strike\x18\x14 \x01(\x02\x12\x10\n\x08strike_2\x18\x15 \x01(\x02\x12\t\n\x01t\x18\x16 \x01(\x05\x12\x1c\n\x14target_profit_amount\x18\x17 \x01(\x02\x12\x19\n\x11target_profit_pct\x18\x18 \x01(\x02\x12\x1b\n\x13target_profit_price\x18\x19 \x01(\x02\x12\x0e\n\x06ticker\x18\x1a \x01(\t\x12\x1b\n\x13total_bot_share_num\x18\x1b \x01(\x05\x12\n\n\x02v1\x18\x1c \x01(\x02\x12\n\n\x02v2\x18\x1d \x01(\x02\x12\x0b\n\x03vol\x18\x1e \x01(\x02\"\xca\x02\n\rHedgeResponse\x12\x0f\n\x07\x62\x61rrier\x18\x01 \x01(\x02\x12\x15\n\rcurrent_price\x18\x02 \x01(\x02\x12\r\n\x05\x64\x65lta\x18\x03 \x01(\x02\x12\x13\n\x0b\x65ntry_price\x18\x04 \x01(\x02\x12\x18\n\x10last_hedge_delta\x18\x05 \x01(\x02\x12\x14\n\x0coption_price\x18\x06 \x01(\x02\x12\t\n\x01q\x18\x07 \x01(\x02\x12\t\n\x01r\x18\x08 \x01(\x02\x12\x14\n\x0cshare_change\x18\t \x01(\x02\x12\x11\n\tshare_num\x18\n \x01(\x02\x12\x0c\n\x04side\x18\x0b \x01(\t\x12\x0e\n\x06status\x18\x0c \x01(\t\x12\x0e\n\x06strike\x18\r \x01(\x02\x12\x10\n\x08strike_2\x18\x0e \x01(\x02\x12\t\n\x01t\x18\x0f \x01(\x05\x12\x1b\n\x13total_bot_share_num\x18\x10 \x01(\x05\x12\n\n\x02v1\x18\x11 \x01(\x02\x12\n\n\x02v2\x18\x12 \x01(\x02\"\xc9\x02\n\x0cStopResponse\x12\x0f\n\x07\x62\x61rrier\x18\x01 \x01(\x02\x12\x15\n\rcurrent_price\x18\x02 \x01(\x02\x12\r\n\x05\x64\x65lta\x18\x03 \x01(\x02\x12\x13\n\x0b\x65ntry_price\x18\x04 \x01(\x02\x12\x18\n\x10last_hedge_delta\x18\x05 \x01(\x02\x12\x14\n\x0coption_price\x18\x06 \x01(\x02\x12\t\n\x01q\x18\x07 \x01(\x02\x12\t\n\x01r\x18\x08 \x01(\x02\x12\x14\n\x0cshare_change\x18\t \x01(\x02\x12\x11\n\tshare_num\x18\n \x01(\x02\x12\x0c\n\x04side\x18\x0b \x01(\t\x12\x0e\n\x06status\x18\x0c \x01(\t\x12\x0e\n\x06strike\x18\r \x01(\x02\x12\x10\n\x08strike_2\x18\x0e \x01(\x02\x12\t\n\x01t\x18\x0f \x01(\x05\x12\x1b\n\x13total_bot_share_num\x18\x10 \x01(\x05\x12\n\n\x02v1\x18\x11 \x01(\x02\x12\n\n\x02v2\x18\x12 \x01(\x02\"\x1c\n\tEchoReply\x12\x0f\n\x07message\x18\x01 \x01(\t2\x8a\x01\n\x04\x45\x63ho\x12,\n\tCreateBot\x12\x0c.echo.Create\x1a\x0f.echo.EchoReply\"\x00\x12*\n\x08HedgeBot\x12\x0b.echo.Hedge\x1a\x0f.echo.EchoReply\"\x00\x12(\n\x07StopBot\x12\n.echo.Stop\x1a\x0f.echo.EchoReply\"\x00\x32\xb6\x02\n\x05\x44roid\x12\x31\n\tCreateBot\x12\x0c.echo.Create\x1a\x14.echo.CreateResponse\"\x00\x12.\n\x08HedgeBot\x12\x0b.echo.Hedge\x1a\x13.echo.HedgeResponse\"\x00\x12+\n\x07StopBot\x12\n.echo.Stop\x1a\x12.echo.StopResponse\"\x00\x12\x36\n\nCreateBots\x12\x0c.echo.Create\x1a\x14.echo.CreateResponse\"\x00(\x01\x30\x01\x12\x33\n\tHedgeBots\x12\x0b.echo.Hedge\x1a\x13.echo.HedgeResponse\"\x00(\x01\x30\x01\x12\x30\n\x08StopBots\x12\n.echo.Stop\x1a\x12.echo.StopResponse\"\x00(\x01\x30\x01\x62\x06proto3'
+  serialized_pb=b'\n\tbot.proto\x12\x04\x65\x63ho\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd1\x01\n\x06\x43reate\x12\x0e\n\x06ticker\x18\x01 \x01(\t\x12-\n\tspot_date\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x19\n\x11investment_amount\x18\x03 \x01(\x02\x12\r\n\x05price\x18\x04 \x01(\x02\x12\x0e\n\x06\x62ot_id\x18\x05 \x01(\t\x12\x0e\n\x06margin\x18\x06 \x01(\x05\x12\x10\n\x08\x66raction\x18\x07 \x01(\x08\x12\x15\n\rtp_multiplier\x18\x08 \x01(\x02\x12\x15\n\rsl_multiplier\x18\t \x01(\x02\"\x90\x04\n\x05Hedge\x12\x0e\n\x06\x62ot_id\x18\x01 \x01(\t\x12\x0b\n\x03ric\x18\x02 \x01(\t\x12\x15\n\rcurrent_price\x18\x03 \x01(\x02\x12\x13\n\x0b\x65ntry_price\x18\x04 \x01(\x02\x12\x16\n\x0elast_share_num\x18\x05 \x01(\x02\x12\x18\n\x10last_hedge_delta\x18\x06 \x01(\x02\x12\x19\n\x11investment_amount\x18\x07 \x01(\x02\x12\x18\n\x10\x62ot_cash_balance\x18\x08 \x01(\x02\x12\x17\n\x0fstop_loss_price\x18\t \x01(\x02\x12\x19\n\x11take_profit_price\x18\n \x01(\x02\x12*\n\x06\x65xpiry\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0e\n\x06strike\x18\x0c \x01(\x02\x12\x10\n\x08strike_2\x18\r \x01(\x02\x12\x0e\n\x06margin\x18\x0e \x01(\x02\x12\x10\n\x08\x66raction\x18\x0f \x01(\x02\x12\x14\n\x0coption_price\x18\x10 \x01(\x02\x12\x0f\n\x07\x62\x61rrier\x18\x11 \x01(\x02\x12\x19\n\x11\x63urrent_low_price\x18\x12 \x01(\x02\x12\x1a\n\x12\x63urrent_high_price\x18\x13 \x01(\x02\x12\x11\n\task_price\x18\x14 \x01(\x02\x12\x11\n\tbid_price\x18\x15 \x01(\x02\x12/\n\x0btrading_day\x18\x16 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x8f\x04\n\x04Stop\x12\x0e\n\x06\x62ot_id\x18\x01 \x01(\t\x12\x0b\n\x03ric\x18\x02 \x01(\t\x12\x15\n\rcurrent_price\x18\x03 \x01(\x02\x12\x13\n\x0b\x65ntry_price\x18\x04 \x01(\x02\x12\x16\n\x0elast_share_num\x18\x05 \x01(\x02\x12\x18\n\x10last_hedge_delta\x18\x06 \x01(\x02\x12\x19\n\x11investment_amount\x18\x07 \x01(\x02\x12\x18\n\x10\x62ot_cash_balance\x18\x08 \x01(\x02\x12\x17\n\x0fstop_loss_price\x18\t \x01(\x02\x12\x19\n\x11take_profit_price\x18\n \x01(\x02\x12*\n\x06\x65xpiry\x18\x0b \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x0e\n\x06strike\x18\x0c \x01(\x02\x12\x10\n\x08strike_2\x18\r \x01(\x02\x12\x0e\n\x06margin\x18\x0e \x01(\x02\x12\x10\n\x08\x66raction\x18\x0f \x01(\x02\x12\x14\n\x0coption_price\x18\x10 \x01(\x02\x12\x0f\n\x07\x62\x61rrier\x18\x11 \x01(\x02\x12\x19\n\x11\x63urrent_low_price\x18\x12 \x01(\x02\x12\x1a\n\x12\x63urrent_high_price\x18\x13 \x01(\x02\x12\x11\n\task_price\x18\x14 \x01(\x02\x12\x11\n\tbid_price\x18\x15 \x01(\x02\x12/\n\x0btrading_day\x18\x16 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\xc3\x01\n\x0b\x42\x61tchCreate\x12\x0f\n\x07tickers\x18\x01 \x01(\x0c\x12\x12\n\nspot_dates\x18\x02 \x01(\x0c\x12\x1a\n\x12investment_amounts\x18\x03 \x01(\x0c\x12\x0e\n\x06prices\x18\x04 \x01(\x0c\x12\x0f\n\x07\x62ot_ids\x18\x05 \x01(\x0c\x12\x0f\n\x07margins\x18\x06 \x01(\x0c\x12\x11\n\tfractions\x18\x07 \x01(\x0c\x12\x16\n\x0etp_multipliers\x18\x08 \x01(\x0c\x12\x16\n\x0esl_multipliers\x18\t \x01(\x0c\"\xb9\x04\n\x0e\x43reateResponse\x12\x0f\n\x07\x62\x61rrier\x18\x01 \x01(\x02\x12\x0e\n\x06\x62ot_id\x18\x02 \x01(\t\x12\x13\n\x0b\x63lassic_vol\x18\x03 \x01(\x02\x12\x0f\n\x07\x63reated\x18\x04 \x01(\t\x12\r\n\x05\x64\x65lta\x18\x05 \x01(\x02\x12\x13\n\x0b\x65ntry_price\x18\x06 \x01(\x02\x12\x0e\n\x06\x65xpiry\x18\x07 \x01(\t\x12\x10\n\x08\x66raction\x18\x08 \x01(\x08\x12\x0e\n\x06margin\x18\t \x01(\x05\x12\x17\n\x0fmax_loss_amount\x18\n \x01(\x02\x12\x14\n\x0cmax_loss_pct\x18\x0b \x01(\x02\x12\x16\n\x0emax_loss_price\x18\x0c \x01(\x02\x12\x14\n\x0coption_price\x18\r \x01(\x02\x12\t\n\x01q\x18\x0e \x01(\x02\x12\t\n\x01r\x18\x0f \x01(\x02\x12\x11\n\tshare_num\x18\x10 \x01(\x02\x12\x0c\n\x04side\x18\x11 \x01(\t\x12\x11\n\tspot_date\x18\x12 \x01(\t\x12\x0e\n\x06status\x18\x13 \x01(\t\x12\x0e\n\x06strike\x18\x14 \x01(\x02\x12\x10\n\x08strike_2\x18\x15 \x01(\x02\x12\t\n\x01t\x18\x16 \x01(\x05\x12\x1c\n\x14target_profit_amount\x18\x17 \x01(\x02\x12\x19\n\x11target_profit_pct\x18\x18 \x01(\x02\x12\x1b\n\x13target_profit_price\x18\x19 \x01(\x02\x12\x0e\n\x06ticker\x18\x1a \x01(\t\x12\x1b\n\x13total_bot_share_num\x18\x1b \x01(\x05\x12\n\n\x02v1\x18\x1c \x01(\x02\x12\n\n\x02v2\x18\x1d \x01(\x02\x12\x0b\n\x03vol\x18\x1e \x01(\x02\"\xbe\x04\n\x13\x42\x61tchCreateResponse\x12\x0f\n\x07\x62\x61rrier\x18\x01 \x01(\x0c\x12\x0e\n\x06\x62ot_id\x18\x02 \x01(\x0c\x12\x13\n\x0b\x63lassic_vol\x18\x03 \x01(\x0c\x12\x0f\n\x07\x63reated\x18\x04 \x01(\x0c\x12\r\n\x05\x64\x65lta\x18\x05 \x01(\x0c\x12\x13\n\x0b\x65ntry_price\x18\x06 \x01(\x0c\x12\x0e\n\x06\x65xpiry\x18\x07 \x01(\x0c\x12\x10\n\x08\x66raction\x18\x08 \x01(\x0c\x12\x0e\n\x06margin\x18\t \x01(\x0c\x12\x17\n\x0fmax_loss_amount\x18\n \x01(\x0c\x12\x14\n\x0cmax_loss_pct\x18\x0b \x01(\x0c\x12\x16\n\x0emax_loss_price\x18\x0c \x01(\x0c\x12\x14\n\x0coption_price\x18\r \x01(\x0c\x12\t\n\x01q\x18\x0e \x01(\x0c\x12\t\n\x01r\x18\x0f \x01(\x0c\x12\x11\n\tshare_num\x18\x10 \x01(\x0c\x12\x0c\n\x04side\x18\x11 \x01(\x0c\x12\x11\n\tspot_date\x18\x12 \x01(\x0c\x12\x0e\n\x06status\x18\x13 \x01(\x0c\x12\x0e\n\x06strike\x18\x14 \x01(\x0c\x12\x10\n\x08strike_2\x18\x15 \x01(\x0c\x12\t\n\x01t\x18\x16 \x01(\x0c\x12\x1c\n\x14target_profit_amount\x18\x17 \x01(\x0c\x12\x19\n\x11target_profit_pct\x18\x18 \x01(\x0c\x12\x1b\n\x13target_profit_price\x18\x19 \x01(\x0c\x12\x0e\n\x06ticker\x18\x1a \x01(\x0c\x12\x1b\n\x13total_bot_share_num\x18\x1b \x01(\x0c\x12\n\n\x02v1\x18\x1c \x01(\x0c\x12\n\n\x02v2\x18\x1d \x01(\x0c\x12\x0b\n\x03vol\x18\x1e \x01(\x0c\"\xca\x02\n\rHedgeResponse\x12\x0f\n\x07\x62\x61rrier\x18\x01 \x01(\x02\x12\x15\n\rcurrent_price\x18\x02 \x01(\x02\x12\r\n\x05\x64\x65lta\x18\x03 \x01(\x02\x12\x13\n\x0b\x65ntry_price\x18\x04 \x01(\x02\x12\x18\n\x10last_hedge_delta\x18\x05 \x01(\x02\x12\x14\n\x0coption_price\x18\x06 \x01(\x02\x12\t\n\x01q\x18\x07 \x01(\x02\x12\t\n\x01r\x18\x08 \x01(\x02\x12\x14\n\x0cshare_change\x18\t \x01(\x02\x12\x11\n\tshare_num\x18\n \x01(\x02\x12\x0c\n\x04side\x18\x0b \x01(\t\x12\x0e\n\x06status\x18\x0c \x01(\t\x12\x0e\n\x06strike\x18\r \x01(\x02\x12\x10\n\x08strike_2\x18\x0e \x01(\x02\x12\t\n\x01t\x18\x0f \x01(\x05\x12\x1b\n\x13total_bot_share_num\x18\x10 \x01(\x05\x12\n\n\x02v1\x18\x11 \x01(\x02\x12\n\n\x02v2\x18\x12 \x01(\x02\"\xc9\x02\n\x0cStopResponse\x12\x0f\n\x07\x62\x61rrier\x18\x01 \x01(\x02\x12\x15\n\rcurrent_price\x18\x02 \x01(\x02\x12\r\n\x05\x64\x65lta\x18\x03 \x01(\x02\x12\x13\n\x0b\x65ntry_price\x18\x04 \x01(\x02\x12\x18\n\x10last_hedge_delta\x18\x05 \x01(\x02\x12\x14\n\x0coption_price\x18\x06 \x01(\x02\x12\t\n\x01q\x18\x07 \x01(\x02\x12\t\n\x01r\x18\x08 \x01(\x02\x12\x14\n\x0cshare_change\x18\t \x01(\x02\x12\x11\n\tshare_num\x18\n \x01(\x02\x12\x0c\n\x04side\x18\x0b \x01(\t\x12\x0e\n\x06status\x18\x0c \x01(\t\x12\x0e\n\x06strike\x18\r \x01(\x02\x12\x10\n\x08strike_2\x18\x0e \x01(\x02\x12\t\n\x01t\x18\x0f \x01(\x05\x12\x1b\n\x13total_bot_share_num\x18\x10 \x01(\x05\x12\n\n\x02v1\x18\x11 \x01(\x02\x12\n\n\x02v2\x18\x12 \x01(\x02\"\x1c\n\tEchoReply\x12\x0f\n\x07message\x18\x01 \x01(\t2\x8a\x01\n\x04\x45\x63ho\x12,\n\tCreateBot\x12\x0c.echo.Create\x1a\x0f.echo.EchoReply\"\x00\x12*\n\x08HedgeBot\x12\x0b.echo.Hedge\x1a\x0f.echo.EchoReply\"\x00\x12(\n\x07StopBot\x12\n.echo.Stop\x1a\x0f.echo.EchoReply\"\x00\x32\xb4\x02\n\x05\x44roid\x12,\n\tCreateBot\x12\x0c.echo.Create\x1a\x0f.echo.EchoReply\"\x00\x12*\n\x08HedgeBot\x12\x0b.echo.Hedge\x1a\x0f.echo.EchoReply\"\x00\x12(\n\x07StopBot\x12\n.echo.Stop\x1a\x0f.echo.EchoReply\"\x00\x12@\n\nCreateBots\x12\x11.echo.BatchCreate\x1a\x19.echo.BatchCreateResponse\"\x00(\x01\x30\x01\x12\x33\n\tHedgeBots\x12\x0b.echo.Hedge\x1a\x13.echo.HedgeResponse\"\x00(\x01\x30\x01\x12\x30\n\x08StopBots\x12\n.echo.Stop\x1a\x12.echo.StopResponse\"\x00(\x01\x30\x01\x62\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 
@@ -473,6 +473,94 @@ _STOP = _descriptor.Descriptor(
 )
 
 
+_BATCHCREATE = _descriptor.Descriptor(
+  name='BatchCreate',
+  full_name='echo.BatchCreate',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='tickers', full_name='echo.BatchCreate.tickers', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='spot_dates', full_name='echo.BatchCreate.spot_dates', index=1,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='investment_amounts', full_name='echo.BatchCreate.investment_amounts', index=2,
+      number=3, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='prices', full_name='echo.BatchCreate.prices', index=3,
+      number=4, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='bot_ids', full_name='echo.BatchCreate.bot_ids', index=4,
+      number=5, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='margins', full_name='echo.BatchCreate.margins', index=5,
+      number=6, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='fractions', full_name='echo.BatchCreate.fractions', index=6,
+      number=7, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='tp_multipliers', full_name='echo.BatchCreate.tp_multipliers', index=7,
+      number=8, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='sl_multipliers', full_name='echo.BatchCreate.sl_multipliers', index=8,
+      number=9, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1326,
+  serialized_end=1521,
+)
+
+
 _CREATERESPONSE = _descriptor.Descriptor(
   name='CreateResponse',
   full_name='echo.CreateResponse',
@@ -703,8 +791,243 @@ _CREATERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1326,
-  serialized_end=1895,
+  serialized_start=1524,
+  serialized_end=2093,
+)
+
+
+_BATCHCREATERESPONSE = _descriptor.Descriptor(
+  name='BatchCreateResponse',
+  full_name='echo.BatchCreateResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='barrier', full_name='echo.BatchCreateResponse.barrier', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='bot_id', full_name='echo.BatchCreateResponse.bot_id', index=1,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='classic_vol', full_name='echo.BatchCreateResponse.classic_vol', index=2,
+      number=3, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='created', full_name='echo.BatchCreateResponse.created', index=3,
+      number=4, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='delta', full_name='echo.BatchCreateResponse.delta', index=4,
+      number=5, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='entry_price', full_name='echo.BatchCreateResponse.entry_price', index=5,
+      number=6, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='expiry', full_name='echo.BatchCreateResponse.expiry', index=6,
+      number=7, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='fraction', full_name='echo.BatchCreateResponse.fraction', index=7,
+      number=8, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='margin', full_name='echo.BatchCreateResponse.margin', index=8,
+      number=9, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='max_loss_amount', full_name='echo.BatchCreateResponse.max_loss_amount', index=9,
+      number=10, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='max_loss_pct', full_name='echo.BatchCreateResponse.max_loss_pct', index=10,
+      number=11, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='max_loss_price', full_name='echo.BatchCreateResponse.max_loss_price', index=11,
+      number=12, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='option_price', full_name='echo.BatchCreateResponse.option_price', index=12,
+      number=13, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='q', full_name='echo.BatchCreateResponse.q', index=13,
+      number=14, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='r', full_name='echo.BatchCreateResponse.r', index=14,
+      number=15, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='share_num', full_name='echo.BatchCreateResponse.share_num', index=15,
+      number=16, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='side', full_name='echo.BatchCreateResponse.side', index=16,
+      number=17, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='spot_date', full_name='echo.BatchCreateResponse.spot_date', index=17,
+      number=18, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='echo.BatchCreateResponse.status', index=18,
+      number=19, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='strike', full_name='echo.BatchCreateResponse.strike', index=19,
+      number=20, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='strike_2', full_name='echo.BatchCreateResponse.strike_2', index=20,
+      number=21, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='t', full_name='echo.BatchCreateResponse.t', index=21,
+      number=22, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='target_profit_amount', full_name='echo.BatchCreateResponse.target_profit_amount', index=22,
+      number=23, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='target_profit_pct', full_name='echo.BatchCreateResponse.target_profit_pct', index=23,
+      number=24, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='target_profit_price', full_name='echo.BatchCreateResponse.target_profit_price', index=24,
+      number=25, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='ticker', full_name='echo.BatchCreateResponse.ticker', index=25,
+      number=26, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='total_bot_share_num', full_name='echo.BatchCreateResponse.total_bot_share_num', index=26,
+      number=27, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='v1', full_name='echo.BatchCreateResponse.v1', index=27,
+      number=28, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='v2', full_name='echo.BatchCreateResponse.v2', index=28,
+      number=29, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='vol', full_name='echo.BatchCreateResponse.vol', index=29,
+      number=30, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2096,
+  serialized_end=2670,
 )
 
 
@@ -854,8 +1177,8 @@ _HEDGERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1898,
-  serialized_end=2228,
+  serialized_start=2673,
+  serialized_end=3003,
 )
 
 
@@ -1005,8 +1328,8 @@ _STOPRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2231,
-  serialized_end=2560,
+  serialized_start=3006,
+  serialized_end=3335,
 )
 
 
@@ -1037,8 +1360,8 @@ _ECHOREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2562,
-  serialized_end=2590,
+  serialized_start=3337,
+  serialized_end=3365,
 )
 
 _CREATE.fields_by_name['spot_date'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
@@ -1049,7 +1372,9 @@ _STOP.fields_by_name['trading_day'].message_type = google_dot_protobuf_dot_times
 DESCRIPTOR.message_types_by_name['Create'] = _CREATE
 DESCRIPTOR.message_types_by_name['Hedge'] = _HEDGE
 DESCRIPTOR.message_types_by_name['Stop'] = _STOP
+DESCRIPTOR.message_types_by_name['BatchCreate'] = _BATCHCREATE
 DESCRIPTOR.message_types_by_name['CreateResponse'] = _CREATERESPONSE
+DESCRIPTOR.message_types_by_name['BatchCreateResponse'] = _BATCHCREATERESPONSE
 DESCRIPTOR.message_types_by_name['HedgeResponse'] = _HEDGERESPONSE
 DESCRIPTOR.message_types_by_name['StopResponse'] = _STOPRESPONSE
 DESCRIPTOR.message_types_by_name['EchoReply'] = _ECHOREPLY
@@ -1076,12 +1401,26 @@ Stop = _reflection.GeneratedProtocolMessageType('Stop', (_message.Message,), {
   })
 _sym_db.RegisterMessage(Stop)
 
+BatchCreate = _reflection.GeneratedProtocolMessageType('BatchCreate', (_message.Message,), {
+  'DESCRIPTOR' : _BATCHCREATE,
+  '__module__' : 'bot_pb2'
+  # @@protoc_insertion_point(class_scope:echo.BatchCreate)
+  })
+_sym_db.RegisterMessage(BatchCreate)
+
 CreateResponse = _reflection.GeneratedProtocolMessageType('CreateResponse', (_message.Message,), {
   'DESCRIPTOR' : _CREATERESPONSE,
   '__module__' : 'bot_pb2'
   # @@protoc_insertion_point(class_scope:echo.CreateResponse)
   })
 _sym_db.RegisterMessage(CreateResponse)
+
+BatchCreateResponse = _reflection.GeneratedProtocolMessageType('BatchCreateResponse', (_message.Message,), {
+  'DESCRIPTOR' : _BATCHCREATERESPONSE,
+  '__module__' : 'bot_pb2'
+  # @@protoc_insertion_point(class_scope:echo.BatchCreateResponse)
+  })
+_sym_db.RegisterMessage(BatchCreateResponse)
 
 HedgeResponse = _reflection.GeneratedProtocolMessageType('HedgeResponse', (_message.Message,), {
   'DESCRIPTOR' : _HEDGERESPONSE,
@@ -1113,8 +1452,8 @@ _ECHO = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=2593,
-  serialized_end=2731,
+  serialized_start=3368,
+  serialized_end=3506,
   methods=[
   _descriptor.MethodDescriptor(
     name='CreateBot',
@@ -1159,8 +1498,8 @@ _DROID = _descriptor.ServiceDescriptor(
   index=1,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=2734,
-  serialized_end=3044,
+  serialized_start=3509,
+  serialized_end=3817,
   methods=[
   _descriptor.MethodDescriptor(
     name='CreateBot',
@@ -1168,7 +1507,7 @@ _DROID = _descriptor.ServiceDescriptor(
     index=0,
     containing_service=None,
     input_type=_CREATE,
-    output_type=_CREATERESPONSE,
+    output_type=_ECHOREPLY,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -1178,7 +1517,7 @@ _DROID = _descriptor.ServiceDescriptor(
     index=1,
     containing_service=None,
     input_type=_HEDGE,
-    output_type=_HEDGERESPONSE,
+    output_type=_ECHOREPLY,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -1188,7 +1527,7 @@ _DROID = _descriptor.ServiceDescriptor(
     index=2,
     containing_service=None,
     input_type=_STOP,
-    output_type=_STOPRESPONSE,
+    output_type=_ECHOREPLY,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -1197,8 +1536,8 @@ _DROID = _descriptor.ServiceDescriptor(
     full_name='echo.Droid.CreateBots',
     index=3,
     containing_service=None,
-    input_type=_CREATE,
-    output_type=_CREATERESPONSE,
+    input_type=_BATCHCREATE,
+    output_type=_BATCHCREATERESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

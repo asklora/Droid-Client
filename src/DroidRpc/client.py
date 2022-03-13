@@ -3,6 +3,7 @@
 __author__ = "LORA Technologies"
 __email__ = "asklora@loratechai.com"
 
+from io import BytesIO
 from google.protobuf.json_format import MessageToDict
 from typing import Optional, List
 import grpc
@@ -11,7 +12,11 @@ from datetime import datetime
 from .converter import datetime_to_timestamp
 from .dataclasses import create_inputs, hedge_inputs, stop_inputs
 from dataclasses import asdict
+import math
+import numpy as np
 import json
+from timeit import default_timer as timer
+from datetime import timedelta
 
 # TODO use pydantic dataclass to validate field types.
 
@@ -42,7 +47,7 @@ class Client:
         tp_multiplier: Optional[float] = None,
         sl_multiplier: Optional[float] = None
     ):
-        response = self.stub.CreateBot(
+        response = self.droid.CreateBot(
             bot_pb2.Create(
                 ticker=ticker,
                 spot_date=self.__string_to_datetime(spot_date),
@@ -59,26 +64,60 @@ class Client:
 
     def __create_bot_generator(
         self, 
-        bot_inputs: List[create_inputs]
+        input_matrix: np.array
     ):
         """
         Generator function to be passed to the create_bots() gRPC bistream function.
+        Splits a matrix of inputs into sub-batches and streams these sub-batches to Droid.
 
         Args:
-            bot_inputs (List): List of inputs for each bot. The
+            input_matrix (np.array(9,1)): List of inputs for each bot. The format is each row corresponds to the BatchCreate protobuf message.
         """
-        for i in bot_inputs:
-            yield bot_pb2.Create(
-                ticker=i.ticker,
-                spot_date=self.__string_to_datetime(i.spot_date),
-                investment_amount=i.investment_amount,
-                price=i.price,
-                bot_id=i.bot_id,
-                margin=i.margin,
-                fraction=i.fractionals,
-                tp_multiplier=i.tp_multiplier,
-                sl_multiplier=i.sl_multiplier
+
+
+        # Split input matrix into smaller batches
+        batch_size = 400
+        splits = math.ceil(input_matrix.shape[1]/batch_size)
+        input_matrix = np.array_split(input_matrix, splits, axis=1)
+
+        for i, batch in enumerate(input_matrix):
+            # Convert to Bytes
+            start = timer()
+            tickers_bytes = BytesIO()
+            np.save(tickers_bytes, batch[0].astype('U7'), allow_pickle=False)
+            spot_dates_bytes = BytesIO()
+            np.save(spot_dates_bytes, batch[1].astype(np.datetime64), allow_pickle=False)
+            investment_amounts_bytes = BytesIO()
+            np.save(investment_amounts_bytes, batch[2].astype(float), allow_pickle=False)
+            prices_bytes = BytesIO()
+            np.save(prices_bytes, batch[3].astype(float), allow_pickle=False)
+            bot_ids_bytes = BytesIO()
+            np.save(bot_ids_bytes, batch[4].astype(str), allow_pickle=False)
+            margins_bytes = BytesIO()
+            np.save(margins_bytes, batch[5].astype(float), allow_pickle=False)
+            fractionalss_bytes = BytesIO()
+            np.save(fractionalss_bytes, batch[6].astype(bool), allow_pickle=False)
+            tp_multipliers_bytes = BytesIO()
+            np.save(tp_multipliers_bytes, batch[7].astype(float), allow_pickle=False)
+            sl_multipliers_bytes = BytesIO()
+            np.save(sl_multipliers_bytes, batch[8].astype(float), allow_pickle=False)
+
+            print(f"Byte conversion time (msg {i}): {timedelta(seconds=(timer()-start))}")
+
+            message = bot_pb2.BatchCreate(
+                tickers=tickers_bytes.getvalue(),
+                spot_dates=spot_dates_bytes.getvalue(),
+                investment_amounts=investment_amounts_bytes.getvalue(),
+                prices=prices_bytes.getvalue(),
+                bot_ids=bot_ids_bytes.getvalue(),
+                margins=margins_bytes.getvalue(),
+                fractions=fractionalss_bytes.getvalue(),
+                tp_multipliers=tp_multipliers_bytes.getvalue(),
+                sl_multipliers=sl_multipliers_bytes.getvalue()
             )
+            # print(message.__sizeof__())
+
+            yield message
     
     def create_bots(
         self,
@@ -88,14 +127,50 @@ class Client:
         Returns a list of bots as dictionaries.
 
         Args:
-            bot_inputs (List[create_inputs]): _description_
+            bot_inputs (List[create_inputs]): Inputs for bot creation.
 
         Returns:
-            _type_: _description_
+            Generator: Generator of responses from Droid.
         """
+        input_types = np.dtype([
+            ('ticker', 'U7'),
+            ('spot_date', str),
+            ('investment_amount', float),
+            ('price', float),
+            ('bot_id', str),
+            ('margin', float),
+            ('fraction', bool),
+            ('tp_multiplier', float),
+            ('sl_multiplier', float)])
+
+        # Convert the inputs into numpy arrays
+        # TODO: pipeline this so that batches of numpy arrays are constructed as streaming is happening. Right now we need to wait for all inputs to be converted.
+        start = timer()
+        input_matrix = np.empty([1,9])
+        for i in bot_inputs:
+            arr = np.array([[
+                i.ticker,
+                np.datetime64(i.spot_date),
+                i.investment_amount,
+                i.price,
+                i.bot_id,
+                i.margin,
+                i.fractionals,
+                i.tp_multiplier,
+                i.sl_multiplier
+            ]])
+            input_matrix = np.concatenate((input_matrix, arr))
+        input_matrix = np.delete(input_matrix, 0, 0)
+        print(f"Total Numpy Conversion time: {timedelta(seconds=(timer()-start))}")
+
+        # Rotate matrix
+        input_matrix = np.rot90(input_matrix, k=-1)
+
+        # Send over gRPC
         # TODO: Use a secure channel, since this is external facing
-        responses = self.droid.CreateBots(self.__create_bot_generator(bot_inputs))
-        # Returning a list would be easier for client to work wtih, but they would have to wait for all bots to be created.
+        responses = self.droid.CreateBots(self.__create_bot_generator(input_matrix))
+
+        # Returning a list would be easier for client to work with, but they would have to wait for all bots to be created.
         # This is slow because they can't pipeline. I'm not sure what we want to do here.
         # return [MessageToDict(response) for response in responses]
         return responses
@@ -126,7 +201,7 @@ class Client:
         bid_price: Optional[float] = None,
         trading_day: Optional[str] = datetime.strftime(datetime.now().date(), "%Y-%m-%d")
     ):
-        response = self.stub.HedgeBot(
+        response = self.droid.HedgeBot(
             bot_pb2.Hedge(
                 ric=ticker,
                 expiry=self.__string_to_datetime(expiry),
@@ -179,7 +254,7 @@ class Client:
         bid_price: Optional[float] = None,
         trading_day: Optional[str] = datetime.strftime(datetime.now().date(), "%Y-%m-%d")
     ):
-        response = self.stub.StopBot(
+        response = self.droid.StopBot(
             bot_pb2.Stop(
                 ric=ticker,
                 expiry=self.__string_to_datetime(expiry),
