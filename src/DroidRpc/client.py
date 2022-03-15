@@ -61,7 +61,7 @@ class Client:
         )
         return json.loads(response.message)
 
-    def __create_bot_generator(
+    def __create_bots_generator(
         self, 
         input_matrix: np.array
     ):
@@ -167,7 +167,7 @@ class Client:
 
         # Send over gRPC
         # TODO: Use a secure channel, since this is external facing
-        responses = self.droid.CreateBots(self.__create_bot_generator(input_matrix))
+        responses = self.droid.CreateBots(self.__create_bots_generator(input_matrix))
 
         # Returning a list would be easier for client to work with, but they would have to wait for all bots to be created.
         # This is slow because they can't pipeline. I'm not sure what we want to do here.
