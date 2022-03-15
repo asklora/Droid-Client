@@ -25,7 +25,6 @@ class Client:
         self.address = address
         self.port = port
         self.channel = grpc.insecure_channel(self.address + ":" + self.port)
-        self.stub = bot_pb2_grpc.EchoStub(self.channel)
         self.droid = bot_pb2_grpc.DroidStub(self.channel) # This one contains the bistream
 
     def __string_to_datetime(self, date: str):
