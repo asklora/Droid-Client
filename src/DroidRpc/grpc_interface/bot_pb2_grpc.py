@@ -169,12 +169,12 @@ class DroidStub(object):
         self.HedgeBots = channel.stream_stream(
                 '/echo.Droid/HedgeBots',
                 request_serializer=bot__pb2.Hedge.SerializeToString,
-                response_deserializer=bot__pb2.HedgeResponse.FromString,
+                response_deserializer=bot__pb2.BatchHedgeResponse.FromString,
                 )
         self.StopBots = channel.stream_stream(
                 '/echo.Droid/StopBots',
                 request_serializer=bot__pb2.Stop.SerializeToString,
-                response_deserializer=bot__pb2.StopResponse.FromString,
+                response_deserializer=bot__pb2.BatchStopResponse.FromString,
                 )
 
 
@@ -246,12 +246,12 @@ def add_DroidServicer_to_server(servicer, server):
             'HedgeBots': grpc.stream_stream_rpc_method_handler(
                     servicer.HedgeBots,
                     request_deserializer=bot__pb2.Hedge.FromString,
-                    response_serializer=bot__pb2.HedgeResponse.SerializeToString,
+                    response_serializer=bot__pb2.BatchHedgeResponse.SerializeToString,
             ),
             'StopBots': grpc.stream_stream_rpc_method_handler(
                     servicer.StopBots,
                     request_deserializer=bot__pb2.Stop.FromString,
-                    response_serializer=bot__pb2.StopResponse.SerializeToString,
+                    response_serializer=bot__pb2.BatchStopResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -345,7 +345,7 @@ class Droid(object):
             metadata=None):
         return grpc.experimental.stream_stream(request_iterator, target, '/echo.Droid/HedgeBots',
             bot__pb2.Hedge.SerializeToString,
-            bot__pb2.HedgeResponse.FromString,
+            bot__pb2.BatchHedgeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -362,6 +362,6 @@ class Droid(object):
             metadata=None):
         return grpc.experimental.stream_stream(request_iterator, target, '/echo.Droid/StopBots',
             bot__pb2.Stop.SerializeToString,
-            bot__pb2.StopResponse.FromString,
+            bot__pb2.BatchStopResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
