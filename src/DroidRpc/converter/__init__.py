@@ -2,6 +2,10 @@
 import six
 import datetime
 
+from typing import Iterable
+from io import BytesIO
+import numpy as np
+
 from google.protobuf.message import Message
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -299,3 +303,23 @@ def validate_dict_for_required_pb_fields(pb, dic):
             missing_fields.append(field_name)
     if missing_fields:
         raise FieldsMissing('Missing fields: {}'.format(', '.join(missing_fields)))
+
+def array_to_bytes(array: Iterable):
+    """
+    Converts an iterable into a bytestream.
+    """
+    if isinstance(array, np.ndarray):
+        output = BytesIO()
+        np.save(output, array, allow_pickle=False)
+        return output.getvalue()
+    if isinstance(array, list):
+        raise NotImplementedError("List serialiser not yet implemented!")
+    if isinstance(array, tuple):
+        raise NotImplementedError("Tuple serialiser not yet implemented!")
+
+def bytes_to_array(bytestream: BytesIO):
+    """
+    Converts a bytestream into a numpy array.
+    """
+    return np.load(BytesIO(bytestream), allow_pickle=False)
+

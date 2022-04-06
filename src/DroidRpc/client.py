@@ -9,7 +9,7 @@ from typing import Optional, List, Generator, Union
 import grpc
 from .grpc_interface import bot_pb2_grpc, bot_pb2
 from datetime import datetime
-from .converter import datetime_to_timestamp
+from .converter import datetime_to_timestamp, array_to_bytes, bytes_to_array
 from .dataclasses import create_inputs, hedge_inputs, stop_inputs
 from dataclasses import asdict
 import math
@@ -17,7 +17,6 @@ import numpy as np
 import json
 from timeit import default_timer as timer
 from datetime import timedelta
-from .batch_utils import array_to_bytes
 
 # TODO use pydantic dataclass to validate field types.
 
@@ -96,6 +95,56 @@ class Client:
             # print(message.__sizeof__())
 
             yield message
+
+    def __create_bots_response_generator(
+        self,
+        responses
+    ):
+        """
+        Generator function that wraps the gRPC bistream generator to convert bytes into numpy arrays
+
+        Args:
+            responses (generator obj): The gRPC bistream generator obj.
+        """
+        batch_size = 400
+
+        for response in responses:
+            print(type(response.barrier), response.barrier)
+            output = {
+                "barrier": bytes_to_array(response.barrier),
+                "bot_id": bytes_to_array(response.bot_id),
+                "classic_vol": bytes_to_array(response.classic_vol),
+                "created": bytes_to_array(response.created),
+                "delta": bytes_to_array(response.delta),
+                "entry_price": bytes_to_array(response.entry_price),
+                "expiry": bytes_to_array(response.expiry),
+                "fraction": bytes_to_array(response.fraction),
+                "margin": bytes_to_array(response.margin),
+                "max_loss_amount": bytes_to_array(response.max_loss_amount),
+                "max_loss_pct": bytes_to_array(response.max_loss_pct),
+                "max_loss_price": bytes_to_array(response.max_loss_price),
+                "option_price": bytes_to_array(response.option_price),
+                "q": bytes_to_array(response.q),
+                "r": bytes_to_array(response.r),
+                "share_num": bytes_to_array(response.share_num),
+                "side": bytes_to_array(response.side),
+                "spot_date": bytes_to_array(response.spot_date),
+                "status": bytes_to_array(response.status),
+                "strike": bytes_to_array(response.strike),
+                "strike_2": bytes_to_array(response.strike_2),
+                "t": bytes_to_array(response.t),
+                "target_profit_amount": bytes_to_array(response.target_profit_amount),
+                "target_profit_pct": bytes_to_array(response.target_profit_pct),
+                "target_profit_price": bytes_to_array(response.target_profit_price),
+                "ticker": bytes_to_array(response.ticker),
+                "total_bot_share_num": bytes_to_array(response.total_bot_share_num),
+                "v1": bytes_to_array(response.v1),
+                "v2": bytes_to_array(response.v2),
+                "vol": bytes_to_array(response.vol)
+            }
+            print(output)
+            yield output
+
     
     def create_bots(
         self,
@@ -116,17 +165,6 @@ class Client:
             Generator: Generator of responses from Droid.
         """
         if input_type == 'list':
-            input_types = np.dtype([
-                ('ticker', 'U7'),
-                ('spot_date', str),
-                ('investment_amount', float),
-                ('price', float),
-                ('bot_id', str),
-                ('margin', float),
-                ('fraction', bool),
-                ('tp_multiplier', float),
-                ('sl_multiplier', float)])
-
             # Convert the inputs into numpy arrays
             start = timer()
             input_matrix = np.empty([1,9])
@@ -149,9 +187,10 @@ class Client:
             # Rotate matrix
             input_matrix = np.rot90(input_matrix, k=-1)
             
-            return self.droid.CreateBots(self.__create_bots_generator(input_matrix))
+            return self.__create_bots_response_generator(self.droid.CreateBots(self.__create_bots_generator(input_matrix)))
 
         elif input_type == 'generator':
+            # This is so that we can pipeline bot creation
             return self.droid.CreateBots(create_inputs)
 
         else:
@@ -278,7 +317,9 @@ class Client:
         if input_type == 'list':
             # Convert inputs into np.ndarrays
             input_matrix = np.empty([1,9])
-            for i in create_inputs:
+            for hedge_input in hedge_inputs:
+                print(hedge_input, "\n")
+            for i in hedge_inputs:
                 arr = np.array([[
                     i.bot_id,
                     i.ticker,
@@ -303,7 +344,7 @@ class Client:
                     i.bid_price,
                     np.datetime64(i.trading_day)
                 ]])
-                input_matrix = np.cpncatenate((input_matrix, arr)) # TODO: Fix crazy memory allocations
+                input_matrix = np.concatenate((input_matrix, arr)) # TODO: Fix crazy memory allocations
             input_matrix = np.delete(input_matrix, 0, 0)
 
             # Rotate matrix
