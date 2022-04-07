@@ -317,9 +317,8 @@ def array_to_bytes(array: Iterable):
     if isinstance(array, tuple):
         raise NotImplementedError("Tuple serialiser not yet implemented!")
 
-def bytes_to_array(bytestream: BytesIO):
+def bytes_to_array(bytestream):
     """
     Converts a bytestream into a numpy array.
     """
     return np.load(BytesIO(bytestream), allow_pickle=False)
-

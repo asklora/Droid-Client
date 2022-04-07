@@ -9,7 +9,7 @@ from typing import Optional, List, Generator, Union
 import grpc
 from .grpc_interface import bot_pb2_grpc, bot_pb2
 from datetime import datetime
-from .converter import datetime_to_timestamp, array_to_bytes, bytes_to_array
+from .converter import datetime_to_timestamp, array_to_bytes, bytes_to_array, protobuf_to_dict
 from .dataclasses import create_inputs, hedge_inputs, stop_inputs
 from dataclasses import asdict
 import math
@@ -109,40 +109,9 @@ class Client:
         batch_size = 400
 
         for response in responses:
-            print(type(response.barrier), response.barrier)
-            output = {
-                "barrier": bytes_to_array(response.barrier),
-                "bot_id": bytes_to_array(response.bot_id),
-                "classic_vol": bytes_to_array(response.classic_vol),
-                "created": bytes_to_array(response.created),
-                "delta": bytes_to_array(response.delta),
-                "entry_price": bytes_to_array(response.entry_price),
-                "expiry": bytes_to_array(response.expiry),
-                "fraction": bytes_to_array(response.fraction),
-                "margin": bytes_to_array(response.margin),
-                "max_loss_amount": bytes_to_array(response.max_loss_amount),
-                "max_loss_pct": bytes_to_array(response.max_loss_pct),
-                "max_loss_price": bytes_to_array(response.max_loss_price),
-                "option_price": bytes_to_array(response.option_price),
-                "q": bytes_to_array(response.q),
-                "r": bytes_to_array(response.r),
-                "share_num": bytes_to_array(response.share_num),
-                "side": bytes_to_array(response.side),
-                "spot_date": bytes_to_array(response.spot_date),
-                "status": bytes_to_array(response.status),
-                "strike": bytes_to_array(response.strike),
-                "strike_2": bytes_to_array(response.strike_2),
-                "t": bytes_to_array(response.t),
-                "target_profit_amount": bytes_to_array(response.target_profit_amount),
-                "target_profit_pct": bytes_to_array(response.target_profit_pct),
-                "target_profit_price": bytes_to_array(response.target_profit_price),
-                "ticker": bytes_to_array(response.ticker),
-                "total_bot_share_num": bytes_to_array(response.total_bot_share_num),
-                "v1": bytes_to_array(response.v1),
-                "v2": bytes_to_array(response.v2),
-                "vol": bytes_to_array(response.vol)
-            }
-            print(output)
+            output = {field: bytes_to_array(value) for (field, value) in protobuf_to_dict(response).items()}
+            output = np.array([row[1] for row in output.items()])
+            output = np.rot90(output)
             yield output
 
     
