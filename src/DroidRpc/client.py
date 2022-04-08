@@ -96,7 +96,7 @@ class Client:
 
             yield message
 
-    def __create_bots_response_generator(
+    def __batch_response_generator(
         self,
         responses
     ):
@@ -156,7 +156,7 @@ class Client:
             # Rotate matrix
             input_matrix = np.rot90(input_matrix, k=-1)
             
-            return self.__create_bots_response_generator(self.droid.CreateBots(self.__create_bots_generator(input_matrix)))
+            return self.__batch_response_generator(self.droid.CreateBots(self.__create_bots_generator(input_matrix)))
 
         elif input_type == 'generator':
             # This is so that we can pipeline bot creation
@@ -319,7 +319,7 @@ class Client:
             # Rotate matrix
             input_matrix = np.rot90(input_matrix, k=-1)
 
-            return self.droid.HedgeBots(self.__hedge_bots_generator(input_matrix))
+            return self.__batch_response_generator(self.droid.HedgeBots(self.__hedge_bots_generator(input_matrix)))
         
         elif input_type == 'generator':
             return self.droid.HedgeBots(hedge_inputs)
@@ -455,7 +455,7 @@ class Client:
 
             input_matrix = np.rot90(input_matrix, k=-1)
 
-            return self.droid.CreateBots(self.__stop_bots_generator(input_matrix))
+            return self.__batch_response_generator(self.droid.StopBots(self.__stop_bots_generator(input_matrix)))
 
         elif input_type == 'generator':
             return self.droid.CreateBots(create_inputs)
