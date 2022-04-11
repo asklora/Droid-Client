@@ -19,7 +19,7 @@ class create_inputs:
 @dataclass
 class hedge_inputs:
     bot_id: str
-    ticker: str
+    ric: str
     current_price: float
     entry_price: float
     last_share_num: float
@@ -44,7 +44,7 @@ class hedge_inputs:
 @dataclass
 class stop_inputs:
     bot_id: str
-    ticker: str
+    ric: str
     current_price: float
     entry_price: float
     last_share_num: float

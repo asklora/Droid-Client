@@ -3,6 +3,7 @@
 __author__ = "LORA Technologies"
 __email__ = "asklora@loratechai.com"
 
+from ast import Try
 from io import BytesIO
 from google.protobuf.json_format import MessageToDict
 from typing import Optional, List, Generator, Union
@@ -81,17 +82,22 @@ class Client:
         input_matrix = np.array_split(input_matrix, splits, axis=1)
 
         for batch in input_matrix:
-            message = bot_pb2.BatchCreate(
-                tickers=array_to_bytes(batch[0].astype('U7')),
-                spot_dates=array_to_bytes(batch[1].astype(np.datetime64)),
-                investment_amounts=array_to_bytes(batch[2].astype(float)),
-                prices=array_to_bytes(batch[3].astype(float)),
-                bot_ids=array_to_bytes(batch[4].astype(str)),
-                margins=array_to_bytes(batch[5].astype(float)),
-                fractions=array_to_bytes(batch[6].astype(bool)),
-                tp_multipliers=array_to_bytes(batch[7].astype(float)),
-                sl_multipliers=array_to_bytes(batch[8].astype(float))
-            )
+            try:
+                message = bot_pb2.BatchCreate(
+                    tickers=array_to_bytes(batch[0].astype('U7')),
+                    spot_dates=array_to_bytes(batch[1].astype(np.datetime64)),
+                    investment_amounts=array_to_bytes(batch[2].astype(float)),
+                    prices=array_to_bytes(batch[3].astype(float)),
+                    bot_ids=array_to_bytes(batch[4].astype(str)),
+                    margins=array_to_bytes(batch[5].astype(float)),
+                    fractions=array_to_bytes(batch[6].astype(bool)),
+                    tp_multipliers=array_to_bytes(batch[7].astype(float)),
+                    sl_multipliers=array_to_bytes(batch[8].astype(float))
+                )
+            except TypeError as e:
+                print(e)
+            except Exception as e:
+                print(e)
             # print(message.__sizeof__())
 
             yield message
@@ -106,12 +112,16 @@ class Client:
         Args:
             responses (generator obj): The gRPC bistream generator obj.
         """
-        batch_size = 400
-
         for response in responses:
-            output = {field: bytes_to_array(value) for (field, value) in protobuf_to_dict(response).items()}
-            output = np.array([row[1] for row in output.items()])
-            output = np.rot90(output)
+            try:
+                output = {field: bytes_to_array(value) for (field, value) in protobuf_to_dict(response).items()}
+                output = np.array([row[1] for row in output.items()])
+                output = np.rot90(output)
+                print(output)
+            except TypeError as e:
+                print(e)
+            except Exception as e:
+                print(e)
             yield output
 
     
@@ -235,34 +245,39 @@ class Client:
         batch_size = 400
         splits = math.ceil(input_matrix.shape[1]/batch_size)
         input_matrix = np.array_split(input_matrix, splits, axis=1)
-
+        from pprint import pprint
         for batch in input_matrix:
-            message = bot_pb2.BatchHedge(
-                ric = array_to_bytes(batch[1].astype('U7')),
-                expiry = array_to_bytes(batch[2].astype(np.datetime64)),
-                investment_amount = array_to_bytes(batch[3].astype(float)),
-                current_price = array_to_bytes(batch[4].astype(float)),
-                bot_id = array_to_bytes(batch[5].astype(str)),
-                margin = array_to_bytes(batch[6].astype(int)),
-                entry_price = array_to_bytes(batch[7].astype(float)),
-                last_share_num = array_to_bytes(batch[8].astype(float)),
-                last_hedge_delta = array_to_bytes(batch[9].astype(float)),
-                bot_cash_balance = array_to_bytes(batch[10].astype(float)),
-                stop_loss_price = array_to_bytes(batch[11].astype(float)),
-                take_profit_price = array_to_bytes(batch[12].astype(float)),
-                option_price = array_to_bytes(batch[13].astype(float)),
-                strike = array_to_bytes(batch[14].astype(float)),
-                strike_2 = array_to_bytes(batch[15].astype(float)),
-                barrier = array_to_bytes(batch[16].astype(float)),
-                current_low_price = array_to_bytes(batch[17].astype(float)),
-                current_high_price = array_to_bytes(batch[18].astype(float)),
-                ask_price = array_to_bytes(batch[19].astype(float)),
-                bid_price = array_to_bytes(batch[20].astype(float)),
-                fraction = array_to_bytes(batch[21].astype(bool)),
-                trading_day = array_to_bytes(batch[22].astype(np.datetime64))
-            )
+            try:
+                message = bot_pb2.BatchHedge(
+                    bot_ids = array_to_bytes(batch[0].astype(str)),
+                    tickers = array_to_bytes(batch[1].astype('U7')),
+                    current_prices = array_to_bytes(batch[2].astype(float)),
+                    entry_prices = array_to_bytes(batch[3].astype(float)),
+                    last_share_nums = array_to_bytes(batch[4].astype(float)),
+                    last_hedge_deltas = array_to_bytes(batch[5].astype(float)),
+                    investment_amounts = array_to_bytes(batch[6].astype(float)),
+                    bot_cash_balances = array_to_bytes(batch[7].astype(float)),
+                    stop_loss_prices = array_to_bytes(batch[8].astype(float)),
+                    take_profit_prices = array_to_bytes(batch[9].astype(float)),
+                    expirys = array_to_bytes(batch[10].astype(np.datetime64)),
+                    strikes = array_to_bytes(batch[11].astype(float)),
+                    strike_2s = array_to_bytes(batch[12].astype(float)),
+                    margins = array_to_bytes(batch[13].astype(int)),
+                    fractions = array_to_bytes(batch[14].astype(bool)),
+                    option_prices = array_to_bytes(batch[15].astype(float)),
+                    barriers = array_to_bytes(batch[16].astype(float)),
+                    current_low_prices = array_to_bytes(batch[17].astype(float)),
+                    current_high_prices = array_to_bytes(batch[18].astype(float)),
+                    ask_prices = array_to_bytes(batch[19].astype(float)),
+                    bid_prices = array_to_bytes(batch[20].astype(float)),
+                    trading_days = array_to_bytes(batch[21].astype(np.datetime64))
+                )
+            except TypeError as e:
+                print(e)
+            except Exception as e:
+                print(e)
             # print(message.__sizeof__())
-
+            
             yield message
 
     def hedge_bots(
@@ -284,14 +299,13 @@ class Client:
             Generator: Generator of responses from Droid.
         """
         if input_type == 'list':
+            print("hedging")
             # Convert inputs into np.ndarrays
-            input_matrix = np.empty([1,9])
-            for hedge_input in hedge_inputs:
-                print(hedge_input, "\n")
+            input_matrix = np.empty([1,22])
             for i in hedge_inputs:
                 arr = np.array([[
                     i.bot_id,
-                    i.ticker,
+                    i.ric,
                     i.current_price,
                     i.entry_price,
                     i.last_share_num,
@@ -318,8 +332,11 @@ class Client:
 
             # Rotate matrix
             input_matrix = np.rot90(input_matrix, k=-1)
-
-            return self.__batch_response_generator(self.droid.HedgeBots(self.__hedge_bots_generator(input_matrix)))
+            
+            generator = self.__hedge_bots_generator(input_matrix)
+            hedgeBots = self.droid.HedgeBots(generator)
+            outputGenerator = self.__batch_response_generator(hedgeBots)
+            return outputGenerator
         
         elif input_type == 'generator':
             return self.droid.HedgeBots(hedge_inputs)
@@ -389,30 +406,35 @@ class Client:
         input_matrix = np.array_split(input_matrix, splits, axis=1)
 
         for batch in input_matrix:
-            message = bot_pb2.BatchStop(
-                ric = array_to_bytes(batch[1].astype('U7')),
-                expiry = array_to_bytes(batch[2].astype(np.datetime64)),
-                investment_amount = array_to_bytes(batch[3].astype(float)),
-                current_price = array_to_bytes(batch[4].astype(float)),
-                bot_id = array_to_bytes(batch[5].astype(str)),
-                margin = array_to_bytes(batch[6].astype(int)),
-                entry_price = array_to_bytes(batch[7].astype(float)),
-                last_share_num = array_to_bytes(batch[8].astype(float)),
-                last_hedge_delta = array_to_bytes(batch[9].astype(float)),
-                bot_cash_balance = array_to_bytes(batch[10].astype(float)),
-                stop_loss_price = array_to_bytes(batch[11].astype(float)),
-                take_profit_price = array_to_bytes(batch[12].astype(float)),
-                option_price = array_to_bytes(batch[13].astype(float)),
-                strike = array_to_bytes(batch[14].astype(float)),
-                strike_2 = array_to_bytes(batch[15].astype(float)),
-                barrier = array_to_bytes(batch[16].astype(float)),
-                current_low_price = array_to_bytes(batch[17].astype(float)),
-                current_high_price = array_to_bytes(batch[18].astype(float)),
-                ask_price = array_to_bytes(batch[19].astype(float)),
-                bid_price = array_to_bytes(batch[20].astype(float)),
-                fraction = array_to_bytes(batch[21].astype(bool)),
-                trading_day = array_to_bytes(batch[22].astype(np.datetime64))
-            )
+            try:
+                message = bot_pb2.BatchStop(
+                    bot_id = array_to_bytes(batch[0].astype(str)),
+                    ric = array_to_bytes(batch[1].astype('U7')),
+                    current_price = array_to_bytes(batch[2].astype(float)),
+                    entry_price = array_to_bytes(batch[3].astype(float)),
+                    last_share_num = array_to_bytes(batch[4].astype(float)),
+                    last_hedge_delta = array_to_bytes(batch[5].astype(float)),
+                    investment_amount = array_to_bytes(batch[6].astype(float)),
+                    bot_cash_balance = array_to_bytes(batch[7].astype(float)),
+                    stop_loss_price = array_to_bytes(batch[8].astype(float)),
+                    take_profit_price = array_to_bytes(batch[9].astype(float)),
+                    expiry = array_to_bytes(batch[10].astype(np.datetime64)),
+                    strike = array_to_bytes(batch[11].astype(float)),
+                    strike_2 = array_to_bytes(batch[12].astype(float)),
+                    margin = array_to_bytes(batch[13].astype(int)),
+                    fraction = array_to_bytes(batch[14].astype(bool)),
+                    option_price = array_to_bytes(batch[15].astype(float)),
+                    barrier = array_to_bytes(batch[16].astype(float)),
+                    current_low_price = array_to_bytes(batch[17].astype(float)),
+                    current_high_price = array_to_bytes(batch[18].astype(float)),
+                    ask_price = array_to_bytes(batch[19].astype(float)),
+                    bid_price = array_to_bytes(batch[20].astype(float)),
+                    trading_day = array_to_bytes(batch[21].astype(np.datetime64))
+                )
+            except TypeError as e:
+                print(e)
+            except Exception as e:
+                print(e)
             
             yield message
 
@@ -423,8 +445,8 @@ class Client:
     ):
 
         if input_type == 'list':
-
             # Convert the inputs into numpy arrays
+            input_matrix = np.empty([1,22])
             for i in stop_inputs:
                 arr = np.array([[
                     i.ric,
@@ -447,11 +469,11 @@ class Client:
                     i.current_high_price,
                     i.ask_price,
                     i.bid_price,
-                    i.fraction,
+                    i.fractionals,
                     i.trading_day
                 ]])
                 input_matrix = np.concatenate((input_matrix, arr)) # TODO: Fix crazy memory allocations
-            input_matrix = np,delete(input_matrix, 0, 0)
+            input_matrix = np.delete(input_matrix, 0, 0)
 
             input_matrix = np.rot90(input_matrix, k=-1)
 
