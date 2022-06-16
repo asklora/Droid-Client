@@ -1,8 +1,9 @@
 # Contains the dataclasses used by the client generator function
 
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from typing import Optional
 from datetime import datetime
+
 
 @dataclass
 class create_inputs:
@@ -15,6 +16,7 @@ class create_inputs:
     fractionals: bool = False
     tp_multiplier: Optional[float] = None
     sl_multiplier: Optional[float] = None
+
 
 @dataclass
 class hedge_inputs:
@@ -40,6 +42,7 @@ class hedge_inputs:
     ask_price: Optional[float] = None
     bid_price: Optional[float] = None
     trading_day: Optional[str] = datetime.strftime(datetime.now().date(), "%Y-%m-%d")
+
 
 @dataclass
 class stop_inputs:
