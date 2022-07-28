@@ -4,7 +4,6 @@ import grpc
 
 from . import bot_pb2 as bot__pb2
 
-
 class EchoStub(object):
     """The echo service definition.
     """
