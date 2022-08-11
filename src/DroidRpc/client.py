@@ -22,6 +22,7 @@ import json
 from timeit import default_timer as timer
 from datetime import timedelta
 
+
 # TODO use pydantic dataclass to validate field types.
 
 
@@ -43,16 +44,16 @@ class Client:
         return date_class
 
     def create_bot(
-        self,
-        ticker: str,
-        spot_date: str,
-        investment_amount: float,
-        bot_id: str,
-        margin: int = 1,
-        price: float = None,
-        fractionals: bool = False,
-        tp_multiplier: Optional[float] = None,
-        sl_multiplier: Optional[float] = None,
+            self,
+            ticker: str,
+            spot_date: str,
+            investment_amount: float,
+            bot_id: str,
+            margin: int = 1,
+            price: float = None,
+            fractionals: bool = False,
+            tp_multiplier: Optional[float] = None,
+            sl_multiplier: Optional[float] = None,
     ):
         response = self.droid.CreateBot(
             bot_pb2.Create(
@@ -86,15 +87,15 @@ class Client:
         for batch in input_matrix:
             try:
                 message = bot_pb2.BatchCreate(
-                    tickers=array_to_bytes(batch[0].astype("U7")),
-                    spot_dates=array_to_bytes(batch[1].astype(np.datetime64)),
-                    investment_amounts=array_to_bytes(batch[2].astype(float)),
-                    prices=array_to_bytes(batch[3].astype(float)),
-                    bot_ids=array_to_bytes(batch[4].astype(str)),
-                    margins=array_to_bytes(batch[5].astype(float)),
-                    fractions=array_to_bytes(batch[6].astype(bool)),
-                    tp_multipliers=array_to_bytes(batch[7].astype(float)),
-                    sl_multipliers=array_to_bytes(batch[8].astype(float)),
+                    ticker=array_to_bytes(batch[0].astype(str)),
+                    spot_date=array_to_bytes(batch[1].astype(np.datetime64)),
+                    bot_id=array_to_bytes(batch[2].astype(str)),
+                    investment_amount=array_to_bytes(batch[3].astype(float)),
+                    current_price=array_to_bytes(batch[4].astype(float)),
+                    margin=array_to_bytes(batch[5].astype(float)),
+                    fraction=array_to_bytes(batch[6].astype(bool)),
+                    multiplier_1=array_to_bytes(batch[7].astype(float)),
+                    multiplier_2=array_to_bytes(batch[8].astype(float)),
                 )
             except TypeError as e:
                 print(e)
@@ -127,9 +128,9 @@ class Client:
             yield output
 
     def create_bots(
-        self,
-        create_inputs: Union[List[create_inputs], Generator],
-        input_type: str = "list",
+            self,
+            create_inputs: Union[List[create_inputs], Generator],
+            input_type: str = "list",
     ):
         """
         Returns a list of bots as dictionaries.
@@ -155,12 +156,12 @@ class Client:
                             i.ticker,
                             np.datetime64(i.spot_date),
                             i.investment_amount,
-                            i.price,
                             i.bot_id,
+                            i.current_price,
                             i.margin,
-                            i.fractionals,
-                            i.tp_multiplier,
-                            i.sl_multiplier,
+                            i.fraction,
+                            i.multiplier_1,
+                            i.multiplier_2,
                         ]
                     ]
                 )
@@ -168,13 +169,15 @@ class Client:
                     (input_matrix, arr)
                 )  # TODO: Fix crazy memory allocations
             input_matrix = np.delete(input_matrix, 0, 0)
-            print(f"Total Numpy Conversion time: {timedelta(seconds=(timer()-start))}")
+            print(
+                f"Total Numpy Conversion time: {timedelta(seconds=(timer() - start))}")
 
             # Rotate matrix
             input_matrix = np.rot90(input_matrix, k=-1)
 
             return self.__batch_response_generator(
-                self.droid.CreateBots(self.__create_bots_generator(input_matrix))
+                self.droid.CreateBots(
+                    self.__create_bots_generator(input_matrix))
             )
 
         elif input_type == "generator":
@@ -185,31 +188,31 @@ class Client:
             raise ValueError(f"{input_type} is not a valid type")
 
     def hedge(
-        self,
-        bot_id: str,
-        ticker: str,
-        current_price: float,
-        entry_price: float,
-        last_share_num: float,
-        last_hedge_delta: float,
-        investment_amount: float,
-        bot_cash_balance: float,
-        stop_loss_price: float,
-        take_profit_price: float,
-        expiry: str,
-        strike: Optional[float] = None,
-        strike_2: Optional[float] = None,
-        margin: Optional[int] = 1,
-        fractionals: Optional[bool] = False,
-        option_price: Optional[float] = None,
-        barrier: Optional[float] = None,
-        current_low_price: Optional[float] = None,
-        current_high_price: Optional[float] = None,
-        ask_price: Optional[float] = None,
-        bid_price: Optional[float] = None,
-        trading_day: Optional[str] = datetime.strftime(
-            datetime.now().date(), "%Y-%m-%d"
-        ),
+            self,
+            bot_id: str,
+            ticker: str,
+            current_price: float,
+            entry_price: float,
+            last_share_num: float,
+            last_hedge_delta: float,
+            investment_amount: float,
+            bot_cash_balance: float,
+            stop_loss_price: float,
+            take_profit_price: float,
+            expiry: str,
+            strike: Optional[float] = None,
+            strike_2: Optional[float] = None,
+            margin: Optional[int] = 1,
+            fractionals: Optional[bool] = False,
+            option_price: Optional[float] = None,
+            barrier: Optional[float] = None,
+            current_low_price: Optional[float] = None,
+            current_high_price: Optional[float] = None,
+            ask_price: Optional[float] = None,
+            bid_price: Optional[float] = None,
+            trading_day: Optional[str] = datetime.strftime(
+                datetime.now().date(), "%Y-%m-%d"
+            ),
     ):
         response = self.droid.HedgeBot(
             bot_pb2.Hedge(
@@ -256,28 +259,23 @@ class Client:
         for batch in input_matrix:
             try:
                 message = bot_pb2.BatchHedge(
-                    bot_ids=array_to_bytes(batch[0].astype(str)),
-                    tickers=array_to_bytes(batch[1].astype("U7")),
-                    current_prices=array_to_bytes(batch[2].astype(float)),
-                    entry_prices=array_to_bytes(batch[3].astype(float)),
-                    last_share_nums=array_to_bytes(batch[4].astype(float)),
-                    last_hedge_deltas=array_to_bytes(batch[5].astype(float)),
-                    investment_amounts=array_to_bytes(batch[6].astype(float)),
-                    bot_cash_balances=array_to_bytes(batch[7].astype(float)),
-                    stop_loss_prices=array_to_bytes(batch[8].astype(float)),
-                    take_profit_prices=array_to_bytes(batch[9].astype(float)),
-                    expirys=array_to_bytes(batch[10].astype(np.datetime64)),
-                    strikes=array_to_bytes(batch[11].astype(float)),
-                    strike_2s=array_to_bytes(batch[12].astype(float)),
-                    margins=array_to_bytes(batch[13].astype(int)),
-                    fractions=array_to_bytes(batch[14].astype(bool)),
-                    option_prices=array_to_bytes(batch[15].astype(float)),
-                    barriers=array_to_bytes(batch[16].astype(float)),
-                    current_low_prices=array_to_bytes(batch[17].astype(float)),
-                    current_high_prices=array_to_bytes(batch[18].astype(float)),
-                    ask_prices=array_to_bytes(batch[19].astype(float)),
-                    bid_prices=array_to_bytes(batch[20].astype(float)),
-                    trading_days=array_to_bytes(batch[21].astype(np.datetime64)),
+                    ticker=array_to_bytes(batch[0].astype(str)),
+                    spot_date=array_to_bytes(batch[1].astype(np.datetime64)),
+                    bot_id=array_to_bytes(batch[2].astype(str)),
+                    investment_amount=array_to_bytes(batch[3].astype(float)),
+                    current_price=array_to_bytes(batch[4].astype(float)),
+                    margin=array_to_bytes(batch[5].astype(int)),
+                    last_hedge_delta=array_to_bytes(batch[6].astype(float)),
+                    last_share_num=array_to_bytes(batch[7].astype(float)),
+                    total_bot_share_num=array_to_bytes(batch[8].astype(float)),
+                    bot_cash_balance=array_to_bytes(batch[9].astype(float)),
+                    expire_date=array_to_bytes(batch[10].astype(np.datetime64)),
+                    price_level_1=array_to_bytes(batch[11].astype(float)),
+                    price_level_2=array_to_bytes(batch[12].astype(float)),
+                    current_low_price=array_to_bytes(batch[13].astype(float)),
+                    current_high_price=array_to_bytes(batch[14].astype(float)),
+                    ask_price=array_to_bytes(batch[15].astype(float)),
+                    bid_price=array_to_bytes(batch[16].astype(float)),
                 )
             except TypeError as e:
                 print(e)
@@ -288,9 +286,9 @@ class Client:
             yield message
 
     def hedge_bots(
-        self,
-        hedge_inputs: Union[List[hedge_inputs], Generator],
-        input_type: str = "list",
+            self,
+            hedge_inputs: Union[List[hedge_inputs], Generator],
+            input_type: str = "list",
     ):
         """
         Returns a list of bots as dictionaries.
@@ -313,28 +311,23 @@ class Client:
                 arr = np.array(
                     [
                         [
+                            i.ticker,
+                            np.datetime64(i.spot_date),
                             i.bot_id,
-                            i.ric,
-                            i.current_price,
-                            i.entry_price,
-                            i.last_share_num,
-                            i.last_hedge_delta,
                             i.investment_amount,
-                            i.bot_cash_balance,
-                            i.stop_loss_price,
-                            i.take_profit_price,
-                            np.datetime64(i.expiry),
-                            i.strike,
-                            i.strike_2,
+                            i.current_price,
                             i.margin,
-                            i.fractionals,
-                            i.option_price,
-                            i.barrier,
+                            i.last_hedge_delta,
+                            i.last_share_num,
+                            i.total_bot_share_num,
+                            i.bot_cash_balance,
+                            np.datetime64(i.expire_date),
+                            i.price_level_1,
+                            i.price_level_2,
                             i.current_low_price,
                             i.current_high_price,
                             i.ask_price,
                             i.bid_price,
-                            np.datetime64(i.trading_day),
                         ]
                     ]
                 )
@@ -357,31 +350,31 @@ class Client:
             raise ValueError(f"{input_type} is not a valid type")
 
     def stop(
-        self,
-        bot_id: str,
-        ticker: str,
-        current_price: float,
-        entry_price: float,
-        last_share_num: float,
-        last_hedge_delta: float,
-        investment_amount: float,
-        bot_cash_balance: float,
-        stop_loss_price: float,
-        take_profit_price: float,
-        expiry: str,
-        strike: Optional[float] = None,
-        strike_2: Optional[float] = None,
-        margin: Optional[int] = 1,
-        fractionals: Optional[bool] = False,
-        option_price: Optional[float] = None,
-        barrier: Optional[float] = None,
-        current_low_price: Optional[float] = None,
-        current_high_price: Optional[float] = None,
-        ask_price: Optional[float] = None,
-        bid_price: Optional[float] = None,
-        trading_day: Optional[str] = datetime.strftime(
-            datetime.now().date(), "%Y-%m-%d"
-        ),
+            self,
+            bot_id: str,
+            ticker: str,
+            current_price: float,
+            entry_price: float,
+            last_share_num: float,
+            last_hedge_delta: float,
+            investment_amount: float,
+            bot_cash_balance: float,
+            stop_loss_price: float,
+            take_profit_price: float,
+            expiry: str,
+            strike: Optional[float] = None,
+            strike_2: Optional[float] = None,
+            margin: Optional[int] = 1,
+            fractionals: Optional[bool] = False,
+            option_price: Optional[float] = None,
+            barrier: Optional[float] = None,
+            current_low_price: Optional[float] = None,
+            current_high_price: Optional[float] = None,
+            ask_price: Optional[float] = None,
+            bid_price: Optional[float] = None,
+            trading_day: Optional[str] = datetime.strftime(
+                datetime.now().date(), "%Y-%m-%d"
+            ),
     ):
         response = self.droid.StopBot(
             bot_pb2.Stop(
@@ -412,8 +405,8 @@ class Client:
         return json.loads(response.message)
 
     def __stop_bots_generator(
-        self,
-        input_matrix: np.ndarray,
+            self,
+            input_matrix: np.ndarray,
     ):
         batch_size = 400
         splits = math.ceil(input_matrix.shape[1] / batch_size)
@@ -422,28 +415,23 @@ class Client:
         for batch in input_matrix:
             try:
                 message = bot_pb2.BatchStop(
-                    bot_ids=array_to_bytes(batch[0].astype(str)),
-                    tickers=array_to_bytes(batch[1].astype("U7")),
-                    current_prices=array_to_bytes(batch[2].astype(float)),
-                    entry_prices=array_to_bytes(batch[3].astype(float)),
-                    last_share_nums=array_to_bytes(batch[4].astype(float)),
-                    last_hedge_deltas=array_to_bytes(batch[5].astype(float)),
-                    investment_amounts=array_to_bytes(batch[6].astype(float)),
-                    bot_cash_balances=array_to_bytes(batch[7].astype(float)),
-                    stop_loss_prices=array_to_bytes(batch[8].astype(float)),
-                    take_profit_prices=array_to_bytes(batch[9].astype(float)),
-                    expirys=array_to_bytes(batch[10].astype(np.datetime64)),
-                    strikes=array_to_bytes(batch[11].astype(float)),
-                    strike_2s=array_to_bytes(batch[12].astype(float)),
-                    margins=array_to_bytes(batch[13].astype(int)),
-                    fractions=array_to_bytes(batch[14].astype(bool)),
-                    option_prices=array_to_bytes(batch[15].astype(float)),
-                    barriers=array_to_bytes(batch[16].astype(float)),
-                    current_low_prices=array_to_bytes(batch[17].astype(float)),
-                    current_high_prices=array_to_bytes(batch[18].astype(float)),
-                    ask_prices=array_to_bytes(batch[19].astype(float)),
-                    bid_prices=array_to_bytes(batch[20].astype(float)),
-                    trading_days=array_to_bytes(batch[21].astype(np.datetime64)),
+                    ticker=array_to_bytes(batch[0].astype(str)),
+                    spot_date=array_to_bytes(batch[1].astype(np.datetime64)),
+                    bot_id=array_to_bytes(batch[2].astype(str)),
+                    investment_amount=array_to_bytes(batch[3].astype(float)),
+                    current_price=array_to_bytes(batch[4].astype(float)),
+                    margin=array_to_bytes(batch[5].astype(int)),
+                    last_hedge_delta=array_to_bytes(batch[6].astype(float)),
+                    last_share_num=array_to_bytes(batch[7].astype(float)),
+                    total_bot_share_num=array_to_bytes(batch[8].astype(float)),
+                    bot_cash_balance=array_to_bytes(batch[9].astype(float)),
+                    expire_date=array_to_bytes(batch[10].astype(np.datetime64)),
+                    price_level_1=array_to_bytes(batch[11].astype(float)),
+                    price_level_2=array_to_bytes(batch[12].astype(float)),
+                    current_low_price=array_to_bytes(batch[13].astype(float)),
+                    current_high_price=array_to_bytes(batch[14].astype(float)),
+                    ask_price=array_to_bytes(batch[15].astype(float)),
+                    bid_price=array_to_bytes(batch[16].astype(float)),
                 )
             except TypeError as e:
                 print(e)
@@ -453,7 +441,8 @@ class Client:
             yield message
 
     def stop_bots(
-        self, stop_inputs: Union[List[stop_inputs], Generator], input_type: str = "list"
+            self, stop_inputs: Union[List[stop_inputs], Generator],
+            input_type: str = "list"
     ):
 
         if input_type == "list":
@@ -463,28 +452,23 @@ class Client:
                 arr = np.array(
                     [
                         [
+                            i.ticker,
+                            np.datetime64(i.spot_date),
                             i.bot_id,
-                            i.ric,
-                            i.current_price,
-                            i.entry_price,
-                            i.last_share_num,
-                            i.last_hedge_delta,
                             i.investment_amount,
-                            i.bot_cash_balance,
-                            i.stop_loss_price,
-                            i.take_profit_price,
-                            i.expiry,
-                            i.strike,
-                            i.strike_2,
+                            i.current_price,
                             i.margin,
-                            i.fractionals,
-                            i.option_price,
-                            i.barrier,
+                            i.last_hedge_delta,
+                            i.last_share_num,
+                            i.total_bot_share_num,
+                            i.bot_cash_balance,
+                            np.datetime64(i.expire_date),
+                            i.price_level_1,
+                            i.price_level_2,
                             i.current_low_price,
                             i.current_high_price,
                             i.ask_price,
                             i.bid_price,
-                            i.trading_day,
                         ]
                     ]
                 )
