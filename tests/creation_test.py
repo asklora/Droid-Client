@@ -16,10 +16,11 @@ class InputGenerator:
             ticker            = "IBM",
             spot_date         = "2022-02-15",
             investment_amount = 100000,
-            price             = 156.5,
+            ask_price         = 156.5,
+            bid_price         = 156.5,
             bot_id            = "CLASSIC_classic_025",
             margin            = 1,
-            fractionals       = False,
+            fraction          = False,
         ):
         """
         Returns a dict of inputs to pass to droid w/ default values.
@@ -28,17 +29,18 @@ class InputGenerator:
             "ticker"            : ticker,
             "spot_date"         : spot_date,
             "investment_amount" : investment_amount,
-            "price"             : price,
+            "ask_price"         : ask_price,
+            "bid_price"         : bid_price,
             "bot_id"            : bot_id,
             "margin"            : margin,
-            "fractionals"       : fractionals,
+            "fraction"          : fraction,
         }
         return inputs
 
     @classmethod
     def create_missing_field_inputs(cls):
         """
-        Returns a a tuple of inputs and expected values, where each set of inputs has one missing field.
+        Returns a tuple of inputs and expected values, where each set of inputs has one missing field.
         """
         input_collection = []
         baseInputs = cls.create_inputs()
@@ -47,7 +49,7 @@ class InputGenerator:
                 expected = "PASS"
             elif arg == "margin":
                 expected = "PASS"
-            elif arg == "fractionals":
+            elif arg == "fraction":
                 expected = "PASS"
             else:
                 expected = TypeError

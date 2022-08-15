@@ -149,15 +149,16 @@ class Client:
         if input_type == "list":
             # Convert the inputs into numpy arrays
             start = timer()
-            input_matrix = np.empty([1, 9])
+            input_matrix = np.empty([1, 10])
             for i in create_inputs:
                 arr = np.array(
                     [
                         [
+                            # make sure this list consistent with bot.proto
                             i.ticker,
                             np.datetime64(i.spot_date),
-                            i.investment_amount,
                             i.bot_id,
+                            i.investment_amount,
                             i.ask_price,
                             i.bid_price,
                             i.margin,
