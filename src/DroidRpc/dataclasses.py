@@ -31,6 +31,7 @@ class hedge_inputs:
     ask_price: float
     bid_price: float
     margin: float
+    fraction: bool
     total_bot_share_num: float
     expire_date: str
     price_level_1: float
@@ -49,6 +50,7 @@ class stop_inputs:
     ask_price: float
     bid_price: float
     margin: float
+    fraction: bool
     total_bot_share_num: float
     expire_date: str
     price_level_1: float
