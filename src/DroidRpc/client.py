@@ -7,6 +7,8 @@ from ast import Try
 from io import BytesIO
 from typing import Optional, List, Generator, Union
 import grpc
+import pandas as pd
+
 from .grpc_interface import bot_pb2_grpc, bot_pb2
 from datetime import datetime
 from .converter import (
@@ -27,6 +29,9 @@ from datetime import timedelta
 
 
 class Client:
+
+    batch_size = 400
+
     def __init__(self, address: str = "guardian", port: str = "50065"):
         self.address = address
         self.port = port
@@ -70,7 +75,7 @@ class Client:
         )
         return json.loads(response.message)
 
-    def __create_bots_generator(self, input_matrix: np.array):
+    def __create_bots_generator(self, input_matrix: np.ndarray):
         """
         Generator function to be passed to the create_bots() gRPC bistream function.
         Splits a matrix of inputs into sub-batches and streams these sub-batches to Droid.
@@ -108,7 +113,8 @@ class Client:
 
     def __batch_response_generator(self, responses):
         """
-        Generator function that wraps the gRPC bistream generator to convert bytes into numpy arrays
+        Generator function that wraps the gRPC bistream generator to convert
+        bytes into numpy arrays
 
         Args:
             responses (generator obj): The gRPC bistream generator obj.
@@ -130,7 +136,9 @@ class Client:
 
     def create_bots(
             self,
-            create_inputs: Union[List[create_inputs], Generator],
+            create_inputs: Union[List[create_inputs],
+                                 Generator,
+                                 pd.DataFrame],
             input_type: str = "list",
     ):
         """
@@ -146,8 +154,9 @@ class Client:
         Returns:
             Generator: Generator of responses from Droid.
         """
-        if input_type == "list":
+        if isinstance(create_inputs, list):
             # Convert the inputs into numpy arrays
+            print(create_inputs)
             start = timer()
             input_matrix = np.empty([1, 10])
             for i in create_inputs:
@@ -183,12 +192,43 @@ class Client:
                     self.__create_bots_generator(input_matrix))
             )
 
-        elif input_type == "generator":
-            # This is so that we can pipeline bot creation
-            return self.droid.CreateBots(create_inputs)
+        elif isinstance(create_inputs, pd.DataFrame):
+            return self.__output_stream(
+                self.droid.CreateBots(
+                    self.__input_stream(create_inputs, bot_pb2.BatchCreate)
+                )
+            )
+        # if isinstance(input_type, list):
+        #     # TODO: This is so that we can pipeline bot creation
+        #     return self.droid.CreateBots(create_inputs)
 
         else:
-            raise ValueError(f"{input_type} is not a valid type")
+            raise ValueError(f"{type(create_inputs)} is not a valid type")
+
+    def __output_stream(self, responses: dict) -> pd.DataFrame:
+        """
+        convert grpc byte response into dataframe
+        """
+        for i in responses:
+            output = {field: bytes_to_array(value)
+                      for (field, value) in protobuf_to_dict(i).items()}
+            output = pd.DataFrame(output)
+            print("Done bytes_to_array input")
+            yield output
+
+    def __input_stream(self, inputs: pd.DataFrame, serializer):
+        """
+        convert dataframe inputs into byte -> serialized input for grpc
+        """
+        n_batch = np.ceil(len(inputs) / self.batch_size)
+        chunks = np.array_split(inputs, n_batch)
+        for i in chunks:
+            byte_input = {col: array_to_bytes(i[col].to_numpy().astype(str))
+                          for col in i}
+            print("Done array_to_bytes input")
+            serialized_input = serializer(**byte_input)
+            print("Done serialize input")
+            yield serialized_input
 
     def hedge(
             self,
@@ -288,7 +328,7 @@ class Client:
 
     def hedge_bots(
             self,
-            hedge_inputs: Union[List[hedge_inputs], Generator],
+            hedge_inputs: Union[List[hedge_inputs], Generator, pd.DataFrame],
             input_type: str = "list",
     ):
         """
@@ -304,7 +344,7 @@ class Client:
         Returns:
             Generator: Generator of responses from Droid.
         """
-        if input_type == "list":
+        if isinstance(hedge_inputs, list):
             print("hedging")
             # Convert inputs into np.ndarrays
             input_matrix = np.empty([1, 22])
@@ -343,10 +383,17 @@ class Client:
             outputGenerator = self.__batch_response_generator(hedgeBots)
             return outputGenerator
 
-        elif input_type == "generator":
-            return self.droid.HedgeBots(hedge_inputs)
+        elif isinstance(hedge_inputs, pd.DataFrame):
+            return self.__output_stream(
+                self.droid.HedgeBots(
+                    self.__input_stream(hedge_inputs, bot_pb2.BatchHedge)
+                )
+            )
+
+        # elif input_type == "generator":
+        #     return self.droid.HedgeBots(hedge_inputs)
         else:
-            raise ValueError(f"{input_type} is not a valid type")
+            raise ValueError(f"{type(hedge_inputs)} is not a valid type")
 
     def stop(
             self,
