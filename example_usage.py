@@ -6,7 +6,7 @@ __email__ = "asklora@loratechai.com"
 from DroidRpc import Client
 from pprint import pprint
 
-client = Client(address='<HOST>', port='50065')
+client = Client(address='localhost', port='50065')
 create_response = client.create_bot(
     ticker            = "IBM",                 # RIC code
     spot_date         = "2022-02-15",          # 
