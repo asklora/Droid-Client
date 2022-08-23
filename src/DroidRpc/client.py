@@ -193,6 +193,8 @@ class Client:
             )
 
         elif isinstance(create_inputs, pd.DataFrame):
+            create_inputs["spot_date"] = pd.to_datetime(
+                create_inputs["spot_date"]).dt.strftime("%Y-%m-%d")
             return self.__output_stream(
                 self.droid.CreateBots(
                     self.__input_stream(create_inputs, bot_pb2.BatchCreate)
@@ -213,8 +215,7 @@ class Client:
             output = {field: bytes_to_array(value)
                       for (field, value) in protobuf_to_dict(i).items()}
             output = pd.DataFrame(output)
-            print("Done bytes_to_array input")
-            yield output
+            yield output.convert_dtypes()
 
     def __input_stream(self, inputs: pd.DataFrame, serializer):
         """
@@ -225,9 +226,7 @@ class Client:
         for i in chunks:
             byte_input = {col: array_to_bytes(i[col].to_numpy().astype(str))
                           for col in i}
-            print("Done array_to_bytes input")
             serialized_input = serializer(**byte_input)
-            print("Done serialize input")
             yield serialized_input
 
     def hedge(
@@ -384,6 +383,10 @@ class Client:
             return outputGenerator
 
         elif isinstance(hedge_inputs, pd.DataFrame):
+            hedge_inputs["spot_date"] = pd.to_datetime(
+                hedge_inputs["spot_date"]).dt.strftime("%Y-%m-%d")
+            hedge_inputs["expire_date"] = pd.to_datetime(
+                hedge_inputs["expire_date"]).dt.strftime("%Y-%m-%d")
             return self.__output_stream(
                 self.droid.HedgeBots(
                     self.__input_stream(hedge_inputs, bot_pb2.BatchHedge)
