@@ -308,6 +308,9 @@ def array_to_bytes(array: Iterable):
     """
     Converts an iterable into a bytestream.
     """
+    if type(array) in [float, bool, str]:
+        array = np.array(array)
+
     if isinstance(array, np.ndarray):
         output = BytesIO()
         np.save(output, array, allow_pickle=False)

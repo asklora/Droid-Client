@@ -7,6 +7,8 @@ from ast import Try
 from io import BytesIO
 from typing import Optional, List, Generator, Union
 import grpc
+import pandas as pd
+
 from .grpc_interface import bot_pb2_grpc, bot_pb2
 from datetime import datetime
 from .converter import (
@@ -22,10 +24,14 @@ import json
 from timeit import default_timer as timer
 from datetime import timedelta
 
+
 # TODO use pydantic dataclass to validate field types.
 
 
 class Client:
+
+    batch_size = 400
+
     def __init__(self, address: str = "guardian", port: str = "50065"):
         self.address = address
         self.port = port
@@ -43,16 +49,16 @@ class Client:
         return date_class
 
     def create_bot(
-        self,
-        ticker: str,
-        spot_date: str,
-        investment_amount: float,
-        bot_id: str,
-        margin: int = 1,
-        price: float = None,
-        fractionals: bool = False,
-        tp_multiplier: Optional[float] = None,
-        sl_multiplier: Optional[float] = None,
+            self,
+            ticker: str,
+            spot_date: str,
+            investment_amount: float,
+            bot_id: str,
+            margin: int = 1,
+            price: float = None,
+            fractionals: bool = False,
+            tp_multiplier: Optional[float] = None,
+            sl_multiplier: Optional[float] = None,
     ):
         response = self.droid.CreateBot(
             bot_pb2.Create(
@@ -69,7 +75,7 @@ class Client:
         )
         return json.loads(response.message)
 
-    def __create_bots_generator(self, input_matrix: np.array):
+    def __create_bots_generator(self, input_matrix: np.ndarray):
         """
         Generator function to be passed to the create_bots() gRPC bistream function.
         Splits a matrix of inputs into sub-batches and streams these sub-batches to Droid.
@@ -86,15 +92,16 @@ class Client:
         for batch in input_matrix:
             try:
                 message = bot_pb2.BatchCreate(
-                    tickers=array_to_bytes(batch[0].astype("U7")),
-                    spot_dates=array_to_bytes(batch[1].astype(np.datetime64)),
-                    investment_amounts=array_to_bytes(batch[2].astype(float)),
-                    prices=array_to_bytes(batch[3].astype(float)),
-                    bot_ids=array_to_bytes(batch[4].astype(str)),
-                    margins=array_to_bytes(batch[5].astype(float)),
-                    fractions=array_to_bytes(batch[6].astype(bool)),
-                    tp_multipliers=array_to_bytes(batch[7].astype(float)),
-                    sl_multipliers=array_to_bytes(batch[8].astype(float)),
+                    ticker=array_to_bytes(batch[0].astype(str)),
+                    spot_date=array_to_bytes(batch[1].astype(np.datetime64)),
+                    bot_id=array_to_bytes(batch[2].astype(str)),
+                    investment_amount=array_to_bytes(batch[3].astype(float)),
+                    ask_price=array_to_bytes(batch[4].astype(float)),
+                    bid_price=array_to_bytes(batch[5].astype(float)),
+                    margin=array_to_bytes(batch[6].astype(float)),
+                    fraction=array_to_bytes(batch[7].astype(bool)),
+                    multiplier_1=array_to_bytes(batch[8].astype(float)),
+                    multiplier_2=array_to_bytes(batch[9].astype(float)),
                 )
             except TypeError as e:
                 print(e)
@@ -106,7 +113,8 @@ class Client:
 
     def __batch_response_generator(self, responses):
         """
-        Generator function that wraps the gRPC bistream generator to convert bytes into numpy arrays
+        Generator function that wraps the gRPC bistream generator to convert
+        bytes into numpy arrays
 
         Args:
             responses (generator obj): The gRPC bistream generator obj.
@@ -127,9 +135,11 @@ class Client:
             yield output
 
     def create_bots(
-        self,
-        create_inputs: Union[List[create_inputs], Generator],
-        input_type: str = "list",
+            self,
+            create_inputs: Union[List[create_inputs],
+                                 Generator,
+                                 pd.DataFrame],
+            input_type: str = "list",
     ):
         """
         Returns a list of bots as dictionaries.
@@ -144,23 +154,26 @@ class Client:
         Returns:
             Generator: Generator of responses from Droid.
         """
-        if input_type == "list":
+        if isinstance(create_inputs, list):
             # Convert the inputs into numpy arrays
+            print(create_inputs)
             start = timer()
-            input_matrix = np.empty([1, 9])
+            input_matrix = np.empty([1, 10])
             for i in create_inputs:
                 arr = np.array(
                     [
                         [
+                            # make sure this list consistent with bot.proto
                             i.ticker,
                             np.datetime64(i.spot_date),
-                            i.investment_amount,
-                            i.price,
                             i.bot_id,
+                            i.investment_amount,
+                            i.ask_price,
+                            i.bid_price,
                             i.margin,
-                            i.fractionals,
-                            i.tp_multiplier,
-                            i.sl_multiplier,
+                            i.fraction,
+                            i.multiplier_1,
+                            i.multiplier_2,
                         ]
                     ]
                 )
@@ -168,48 +181,82 @@ class Client:
                     (input_matrix, arr)
                 )  # TODO: Fix crazy memory allocations
             input_matrix = np.delete(input_matrix, 0, 0)
-            print(f"Total Numpy Conversion time: {timedelta(seconds=(timer()-start))}")
+            print(
+                f"Total Numpy Conversion time: {timedelta(seconds=(timer() - start))}")
 
             # Rotate matrix
             input_matrix = np.rot90(input_matrix, k=-1)
 
             return self.__batch_response_generator(
-                self.droid.CreateBots(self.__create_bots_generator(input_matrix))
+                self.droid.CreateBots(
+                    self.__create_bots_generator(input_matrix))
             )
 
-        elif input_type == "generator":
-            # This is so that we can pipeline bot creation
-            return self.droid.CreateBots(create_inputs)
+        elif isinstance(create_inputs, pd.DataFrame):
+            return self.__output_stream(
+                self.droid.CreateBots(
+                    self.__input_stream(create_inputs, bot_pb2.BatchCreate)
+                )
+            )
+        # if isinstance(input_type, list):
+        #     # TODO: This is so that we can pipeline bot creation
+        #     return self.droid.CreateBots(create_inputs)
 
         else:
-            raise ValueError(f"{input_type} is not a valid type")
+            raise ValueError(f"{type(create_inputs)} is not a valid type")
+
+    def __output_stream(self, responses: dict) -> pd.DataFrame:
+        """
+        convert grpc byte response into dataframe
+        """
+        for i in responses:
+            output = {field: bytes_to_array(value)
+                      for (field, value) in protobuf_to_dict(i).items()}
+            output = pd.DataFrame(output)
+            yield output.convert_dtypes()
+
+    def __input_stream(self, inputs: pd.DataFrame, serializer):
+        """
+        convert dataframe inputs into byte -> serialized input for grpc
+        """
+        n_batch = np.ceil(len(inputs) / self.batch_size)
+        chunks = np.array_split(inputs, n_batch)
+        for i in chunks:
+            byte_input = {
+                col: array_to_bytes(i[col].to_numpy().astype(str))
+                if "date" not in col
+                else array_to_bytes(pd.to_datetime(i[col]).dt.date
+                                    .to_numpy().astype(str))
+                for col in i}
+            serialized_input = serializer(**byte_input)
+            yield serialized_input
 
     def hedge(
-        self,
-        bot_id: str,
-        ticker: str,
-        current_price: float,
-        entry_price: float,
-        last_share_num: float,
-        last_hedge_delta: float,
-        investment_amount: float,
-        bot_cash_balance: float,
-        stop_loss_price: float,
-        take_profit_price: float,
-        expiry: str,
-        strike: Optional[float] = None,
-        strike_2: Optional[float] = None,
-        margin: Optional[int] = 1,
-        fractionals: Optional[bool] = False,
-        option_price: Optional[float] = None,
-        barrier: Optional[float] = None,
-        current_low_price: Optional[float] = None,
-        current_high_price: Optional[float] = None,
-        ask_price: Optional[float] = None,
-        bid_price: Optional[float] = None,
-        trading_day: Optional[str] = datetime.strftime(
-            datetime.now().date(), "%Y-%m-%d"
-        ),
+            self,
+            bot_id: str,
+            ticker: str,
+            current_price: float,
+            entry_price: float,
+            last_share_num: float,
+            last_hedge_delta: float,
+            investment_amount: float,
+            bot_cash_balance: float,
+            stop_loss_price: float,
+            take_profit_price: float,
+            expiry: str,
+            strike: Optional[float] = None,
+            strike_2: Optional[float] = None,
+            margin: Optional[int] = 1,
+            fractionals: Optional[bool] = False,
+            option_price: Optional[float] = None,
+            barrier: Optional[float] = None,
+            current_low_price: Optional[float] = None,
+            current_high_price: Optional[float] = None,
+            ask_price: Optional[float] = None,
+            bid_price: Optional[float] = None,
+            trading_day: Optional[str] = datetime.strftime(
+                datetime.now().date(), "%Y-%m-%d"
+            ),
     ):
         response = self.droid.HedgeBot(
             bot_pb2.Hedge(
@@ -256,28 +303,21 @@ class Client:
         for batch in input_matrix:
             try:
                 message = bot_pb2.BatchHedge(
-                    bot_ids=array_to_bytes(batch[0].astype(str)),
-                    tickers=array_to_bytes(batch[1].astype("U7")),
-                    current_prices=array_to_bytes(batch[2].astype(float)),
-                    entry_prices=array_to_bytes(batch[3].astype(float)),
-                    last_share_nums=array_to_bytes(batch[4].astype(float)),
-                    last_hedge_deltas=array_to_bytes(batch[5].astype(float)),
-                    investment_amounts=array_to_bytes(batch[6].astype(float)),
-                    bot_cash_balances=array_to_bytes(batch[7].astype(float)),
-                    stop_loss_prices=array_to_bytes(batch[8].astype(float)),
-                    take_profit_prices=array_to_bytes(batch[9].astype(float)),
-                    expirys=array_to_bytes(batch[10].astype(np.datetime64)),
-                    strikes=array_to_bytes(batch[11].astype(float)),
-                    strike_2s=array_to_bytes(batch[12].astype(float)),
-                    margins=array_to_bytes(batch[13].astype(int)),
-                    fractions=array_to_bytes(batch[14].astype(bool)),
-                    option_prices=array_to_bytes(batch[15].astype(float)),
-                    barriers=array_to_bytes(batch[16].astype(float)),
-                    current_low_prices=array_to_bytes(batch[17].astype(float)),
-                    current_high_prices=array_to_bytes(batch[18].astype(float)),
-                    ask_prices=array_to_bytes(batch[19].astype(float)),
-                    bid_prices=array_to_bytes(batch[20].astype(float)),
-                    trading_days=array_to_bytes(batch[21].astype(np.datetime64)),
+                    ticker=array_to_bytes(batch[0].astype(str)),
+                    spot_date=array_to_bytes(batch[1].astype(np.datetime64)),
+                    bot_id=array_to_bytes(batch[2].astype(str)),
+                    investment_amount=array_to_bytes(batch[3].astype(float)),
+                    ask_price=array_to_bytes(batch[4].astype(float)),
+                    bid_price=array_to_bytes(batch[5].astype(float)),
+                    margin=array_to_bytes(batch[6].astype(float)),
+                    fraction=array_to_bytes(batch[7].astype(bool)),
+                    last_hedge_delta=array_to_bytes(batch[8].astype(float)),
+                    last_share_num=array_to_bytes(batch[9].astype(float)),
+                    total_bot_share_num=array_to_bytes(batch[10].astype(float)),
+                    bot_cash_balance=array_to_bytes(batch[11].astype(float)),
+                    expire_date=array_to_bytes(batch[12].astype(np.datetime64)),
+                    price_level_1=array_to_bytes(batch[13].astype(float)),
+                    price_level_2=array_to_bytes(batch[14].astype(float)),
                 )
             except TypeError as e:
                 print(e)
@@ -288,9 +328,9 @@ class Client:
             yield message
 
     def hedge_bots(
-        self,
-        hedge_inputs: Union[List[hedge_inputs], Generator],
-        input_type: str = "list",
+            self,
+            hedge_inputs: Union[List[hedge_inputs], Generator, pd.DataFrame],
+            input_type: str = "list",
     ):
         """
         Returns a list of bots as dictionaries.
@@ -305,7 +345,7 @@ class Client:
         Returns:
             Generator: Generator of responses from Droid.
         """
-        if input_type == "list":
+        if isinstance(hedge_inputs, list):
             print("hedging")
             # Convert inputs into np.ndarrays
             input_matrix = np.empty([1, 22])
@@ -313,28 +353,21 @@ class Client:
                 arr = np.array(
                     [
                         [
+                            i.ticker,
+                            i.spot_date,
                             i.bot_id,
-                            i.ric,
-                            i.current_price,
-                            i.entry_price,
-                            i.last_share_num,
-                            i.last_hedge_delta,
                             i.investment_amount,
-                            i.bot_cash_balance,
-                            i.stop_loss_price,
-                            i.take_profit_price,
-                            np.datetime64(i.expiry),
-                            i.strike,
-                            i.strike_2,
-                            i.margin,
-                            i.fractionals,
-                            i.option_price,
-                            i.barrier,
-                            i.current_low_price,
-                            i.current_high_price,
                             i.ask_price,
                             i.bid_price,
-                            np.datetime64(i.trading_day),
+                            i.margin,
+                            i.fraction,
+                            i.last_hedge_delta,
+                            i.last_share_num,
+                            i.total_bot_share_num,
+                            i.bot_cash_balance,
+                            i.expire_date,
+                            i.price_level_1,
+                            i.price_level_2,
                         ]
                     ]
                 )
@@ -351,37 +384,44 @@ class Client:
             outputGenerator = self.__batch_response_generator(hedgeBots)
             return outputGenerator
 
-        elif input_type == "generator":
-            return self.droid.HedgeBots(hedge_inputs)
+        elif isinstance(hedge_inputs, pd.DataFrame):
+            return self.__output_stream(
+                self.droid.HedgeBots(
+                    self.__input_stream(hedge_inputs, bot_pb2.BatchHedge)
+                )
+            )
+
+        # elif input_type == "generator":
+        #     return self.droid.HedgeBots(hedge_inputs)
         else:
-            raise ValueError(f"{input_type} is not a valid type")
+            raise ValueError(f"{type(hedge_inputs)} is not a valid type")
 
     def stop(
-        self,
-        bot_id: str,
-        ticker: str,
-        current_price: float,
-        entry_price: float,
-        last_share_num: float,
-        last_hedge_delta: float,
-        investment_amount: float,
-        bot_cash_balance: float,
-        stop_loss_price: float,
-        take_profit_price: float,
-        expiry: str,
-        strike: Optional[float] = None,
-        strike_2: Optional[float] = None,
-        margin: Optional[int] = 1,
-        fractionals: Optional[bool] = False,
-        option_price: Optional[float] = None,
-        barrier: Optional[float] = None,
-        current_low_price: Optional[float] = None,
-        current_high_price: Optional[float] = None,
-        ask_price: Optional[float] = None,
-        bid_price: Optional[float] = None,
-        trading_day: Optional[str] = datetime.strftime(
-            datetime.now().date(), "%Y-%m-%d"
-        ),
+            self,
+            bot_id: str,
+            ticker: str,
+            current_price: float,
+            entry_price: float,
+            last_share_num: float,
+            last_hedge_delta: float,
+            investment_amount: float,
+            bot_cash_balance: float,
+            stop_loss_price: float,
+            take_profit_price: float,
+            expiry: str,
+            strike: Optional[float] = None,
+            strike_2: Optional[float] = None,
+            margin: Optional[int] = 1,
+            fractionals: Optional[bool] = False,
+            option_price: Optional[float] = None,
+            barrier: Optional[float] = None,
+            current_low_price: Optional[float] = None,
+            current_high_price: Optional[float] = None,
+            ask_price: Optional[float] = None,
+            bid_price: Optional[float] = None,
+            trading_day: Optional[str] = datetime.strftime(
+                datetime.now().date(), "%Y-%m-%d"
+            ),
     ):
         response = self.droid.StopBot(
             bot_pb2.Stop(
@@ -412,8 +452,8 @@ class Client:
         return json.loads(response.message)
 
     def __stop_bots_generator(
-        self,
-        input_matrix: np.ndarray,
+            self,
+            input_matrix: np.ndarray,
     ):
         batch_size = 400
         splits = math.ceil(input_matrix.shape[1] / batch_size)
@@ -422,28 +462,21 @@ class Client:
         for batch in input_matrix:
             try:
                 message = bot_pb2.BatchStop(
-                    bot_ids=array_to_bytes(batch[0].astype(str)),
-                    tickers=array_to_bytes(batch[1].astype("U7")),
-                    current_prices=array_to_bytes(batch[2].astype(float)),
-                    entry_prices=array_to_bytes(batch[3].astype(float)),
-                    last_share_nums=array_to_bytes(batch[4].astype(float)),
-                    last_hedge_deltas=array_to_bytes(batch[5].astype(float)),
-                    investment_amounts=array_to_bytes(batch[6].astype(float)),
-                    bot_cash_balances=array_to_bytes(batch[7].astype(float)),
-                    stop_loss_prices=array_to_bytes(batch[8].astype(float)),
-                    take_profit_prices=array_to_bytes(batch[9].astype(float)),
-                    expirys=array_to_bytes(batch[10].astype(np.datetime64)),
-                    strikes=array_to_bytes(batch[11].astype(float)),
-                    strike_2s=array_to_bytes(batch[12].astype(float)),
-                    margins=array_to_bytes(batch[13].astype(int)),
-                    fractions=array_to_bytes(batch[14].astype(bool)),
-                    option_prices=array_to_bytes(batch[15].astype(float)),
-                    barriers=array_to_bytes(batch[16].astype(float)),
-                    current_low_prices=array_to_bytes(batch[17].astype(float)),
-                    current_high_prices=array_to_bytes(batch[18].astype(float)),
-                    ask_prices=array_to_bytes(batch[19].astype(float)),
-                    bid_prices=array_to_bytes(batch[20].astype(float)),
-                    trading_days=array_to_bytes(batch[21].astype(np.datetime64)),
+                    ticker=array_to_bytes(batch[0].astype(str)),
+                    spot_date=array_to_bytes(batch[1].astype(np.datetime64)),
+                    bot_id=array_to_bytes(batch[2].astype(str)),
+                    investment_amount=array_to_bytes(batch[3].astype(float)),
+                    ask_price=array_to_bytes(batch[4].astype(float)),
+                    bid_price=array_to_bytes(batch[5].astype(float)),
+                    margin=array_to_bytes(batch[6].astype(float)),
+                    fraction=array_to_bytes(batch[7].astype(bool)),
+                    last_hedge_delta=array_to_bytes(batch[8].astype(float)),
+                    last_share_num=array_to_bytes(batch[9].astype(float)),
+                    total_bot_share_num=array_to_bytes(batch[10].astype(float)),
+                    bot_cash_balance=array_to_bytes(batch[11].astype(float)),
+                    expire_date=array_to_bytes(batch[12].astype(np.datetime64)),
+                    price_level_1=array_to_bytes(batch[13].astype(float)),
+                    price_level_2=array_to_bytes(batch[14].astype(float)),
                 )
             except TypeError as e:
                 print(e)
@@ -453,7 +486,8 @@ class Client:
             yield message
 
     def stop_bots(
-        self, stop_inputs: Union[List[stop_inputs], Generator], input_type: str = "list"
+            self, stop_inputs: Union[List[stop_inputs], Generator],
+            input_type: str = "list"
     ):
 
         if input_type == "list":
@@ -463,28 +497,21 @@ class Client:
                 arr = np.array(
                     [
                         [
+                            i.ticker,
+                            i.spot_date,
                             i.bot_id,
-                            i.ric,
-                            i.current_price,
-                            i.entry_price,
-                            i.last_share_num,
-                            i.last_hedge_delta,
                             i.investment_amount,
-                            i.bot_cash_balance,
-                            i.stop_loss_price,
-                            i.take_profit_price,
-                            i.expiry,
-                            i.strike,
-                            i.strike_2,
-                            i.margin,
-                            i.fractionals,
-                            i.option_price,
-                            i.barrier,
-                            i.current_low_price,
-                            i.current_high_price,
                             i.ask_price,
                             i.bid_price,
-                            i.trading_day,
+                            i.margin,
+                            i.fraction,
+                            i.last_hedge_delta,
+                            i.last_share_num,
+                            i.total_bot_share_num,
+                            i.bot_cash_balance,
+                            i.expire_date,
+                            i.price_level_1,
+                            i.price_level_2,
                         ]
                     ]
                 )
