@@ -32,7 +32,10 @@ class Client:
 
     batch_size = 8000
 
-    def __init__(self, address: str = "guardian", port: str = "50065"):
+    def __init__(self,
+                 address: str = "guardian",
+                 port: str = "50065",
+                 batch_size: int = None):
         self.address = address
         self.port = port
         # TODO: Use a secure channel because this is external facing
@@ -40,6 +43,8 @@ class Client:
         self.droid = bot_pb2_grpc.DroidStub(
             self.channel
         )  # This one contains the bistream
+        if batch_size is not None:
+            self.batch_size = batch_size
 
     def __string_to_datetime(self, date: str):
         date = datetime.strptime(date, "%Y-%m-%d")
