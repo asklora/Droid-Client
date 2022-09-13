@@ -30,7 +30,7 @@ from datetime import timedelta
 
 class Client:
 
-    batch_size = 400
+    batch_size = 8000
 
     def __init__(self, address: str = "guardian", port: str = "50065"):
         self.address = address
