@@ -90,8 +90,7 @@ class Client:
         """
 
         # Split input matrix into smaller batches
-        batch_size = 400
-        splits = math.ceil(input_matrix.shape[1] / batch_size)
+        splits = math.ceil(input_matrix.shape[1] / self.batch_size)
         input_matrix = np.array_split(input_matrix, splits, axis=1)
 
         for batch in input_matrix:
@@ -301,8 +300,7 @@ class Client:
         """
 
         # Split input matrix into smaller batches
-        batch_size = 400
-        splits = math.ceil(input_matrix.shape[1] / batch_size)
+        splits = math.ceil(input_matrix.shape[1] / self.batch_size)
         input_matrix = np.array_split(input_matrix, splits, axis=1)
 
         for batch in input_matrix:
@@ -460,8 +458,7 @@ class Client:
             self,
             input_matrix: np.ndarray,
     ):
-        batch_size = 400
-        splits = math.ceil(input_matrix.shape[1] / batch_size)
+        splits = math.ceil(input_matrix.shape[1] / self.batch_size)
         input_matrix = np.array_split(input_matrix, splits, axis=1)
 
         for batch in input_matrix:
