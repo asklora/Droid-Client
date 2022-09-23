@@ -10,7 +10,7 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
 
 setuptools.setup(
     name="DroidRpc",
-    version="1.4.1",
+    version="1.4.2",
     description="Python client for connecting to LORA Technologies' bot services.",
     long_description=long_description,
     long_description_content_type="text/markdown",
